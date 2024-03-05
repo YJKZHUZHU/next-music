@@ -1,0 +1,31 @@
+.loginContainer {
+  background-color: #fff;
+  margin-top: 16px;
+}
+.logoMask {
+  position: relative;
+  background-image: url("/login/bg@2x.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: 16px -80px;
+}
+
+.logoContainer {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.89) 57%,
+    #ffffff 90%
+  );
+  position: absolute;
+  width: 100%;
+}
+
+.loginTypeButton {
+  color: #ffffff;
+  font-size: 16px;
+  // border-color: #e8e8e8;
+  height: 56px;
+  border-radius: 10px;
+  background: #fb233b;
+}

@@ -1,9 +1,11 @@
 module.exports = {
   plugins: {
-    tailwindcss: {},
+    tailwindcss: {
+      // rootValue: 375 / 10,
+    },
     autoprefixer: {},
     "postcss-pxtorem": {
-      rootValue: 375 / 10, // 1080px为设计稿大小
+      rootValue: 375 / 10,
       unitPrecision: 5,
       propList: ["*"],
       selectorBlackList: [/^.html/], //排除html样式
