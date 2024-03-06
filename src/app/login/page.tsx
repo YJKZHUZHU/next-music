@@ -1,9 +1,19 @@
 "use client"
 import { Button } from "antd-mobile"
 import Image from "next/image"
+import { useRouter } from "next-nprogress-bar"
+import { banner } from "@/api/home"
 import styles from "./index.module.scss"
+import { useEffect } from "react"
 
 function Login() {
+  const router = useRouter()
+  const onLoginLink = (type: "phone" | "email") => {
+    router.push(`/login/${type}`)
+  }
+  // useEffect(() => {
+  //   banner()
+  // }, [])
   return (
     <div className="bg-white h-[100vh] flex flex-col px-[24px]">
       <p className=" text-[14px] text-[#FB233B] text-right mt-[16px]">立即体验</p>
@@ -17,10 +27,16 @@ function Login() {
       </div>
 
       <div className="flex flex-col gap-[16px]">
-        <Button className={styles.loginTypeButton} fill="solid">
+        <Button
+          onClick={() => onLoginLink("phone")}
+          className={styles.loginTypeButton}
+          fill="solid">
           手机号登录
         </Button>
-        <Button className={styles.loginTypeButton} fill="solid">
+        <Button
+          onClick={() => onLoginLink("email")}
+          className={styles.loginTypeButton}
+          fill="solid">
           邮箱登录
         </Button>
       </div>

@@ -18,6 +18,7 @@
 ### 接口文档
 
 1. [https://binaryify.github.io/NeteaseCloudMusicApi/#/?id=neteasecloudmusicapi](https://binaryify.github.io/NeteaseCloudMusicApi/#/?id=neteasecloudmusicapi)
+2. [接口地址](https://neteasecloudmusicapi.vercel.app)
 
 ### 样式 tailwind
 

@@ -1,7 +1,6 @@
 "use client"
 import axios, { AxiosInstance } from "axios"
-// import { message } from 'antd-mobile'
-// import Cookie, { CookiesEnum } from "@/utils/cookies"
+import qs from "qs"
 import { redirect } from "next/navigation"
 
 export interface ErrorRes extends Error {
@@ -17,18 +16,23 @@ function createService() {
     withCredentials: false,
     // baseURL: (window as any)._global._BASEURL,
   })
-  // 请求拦截
-  service.interceptors.request.use(
-    (config) => {
-      return config
-    },
-    // 发送失败
-    (error) => Promise.reject(error)
-  )
-  // 响应拦截（可根据具体业务作出相应的调整）
+
   service.interceptors.response.use(
     (response) => {
-      return response.data
+      console.log("response.data", response)
+      const { code, ...data } = response.data
+      if (response.data.code === 200) {
+        return {
+          code,
+          message: "",
+          success: true,
+          data,
+        }
+      }
+      return {
+        ...response.data,
+        success: false,
+      }
     },
     (error) => {
       // Status 是 HTTP 状态码
@@ -36,6 +40,9 @@ function createService() {
       console.log("999", error)
       const status = error?.response?.status
       switch (status) {
+        case 301:
+          error.message = "需要登录"
+          break
         case 400:
           error.message = "请求错误"
           break
@@ -72,19 +79,9 @@ function createService() {
         default:
           break
       }
+
       console.log("error===>", JSON.stringify(error))
-      // &&
-      // ['09020102', '09020101', '09020102'].includes(error.response.data.errorCode))
-      // if (
-      //   error.response &&
-      //   (error.response.status === 401 || error.response.status === 403) &&
-      //   window.location.pathname !== "/"
-      // ) {
-      //   // Cookie.removeAll()
-      //   // message.error(error.response.data.errorMessage)
-      //   // location.href = `/login`
-      // }
-      // window.location.pathname !== "/" && message.error(error.message)
+
       return Promise.reject(error)
     }
   )
@@ -92,20 +89,36 @@ function createService() {
 }
 
 export function createRequestFunction(service: AxiosInstance) {
- 
-  // const token = Cookie.get(CookiesEnum.authentication)
-
-  // console.log("service", token)
-  //
   service.defaults.baseURL = "https://neteasecloudmusicapi.vercel.app"
 
   service.defaults.timeout = 60 * 1000
 
-  // if (token) {
-  //   service.defaults.headers.common = {
-  //     token,
-  //   }
-  // }
+  return service
+}
+
+// 不缓存
+export function createNoCacheRequestFunction(service: AxiosInstance) {
+  service.interceptors.request.use(
+    (config) => {
+      const [url, queryString] = config.url?.split("?") || []
+      let obj = Object.create(null)
+      obj.timestamp = Date.now()
+      if (queryString) {
+        obj = {
+          ...obj,
+          ...qs.parse(queryString),
+        }
+      }
+      const query = qs.stringify(obj)
+      config.url = `${url}?${query}`
+      return config
+    },
+    // 发送失败
+    (error) => Promise.reject(error)
+  )
+  service.defaults.baseURL = "https://neteasecloudmusicapi.vercel.app"
+
+  service.defaults.timeout = 60 * 1000
 
   return service
 }
@@ -113,6 +126,7 @@ export function createRequestFunction(service: AxiosInstance) {
 export interface IResp<T = Record<string, string>> {
   code: string
   message: string
+  msg?: string
   success: boolean
   data: T
 }
@@ -126,4 +140,6 @@ export interface IPageRecord<T = Record<string, string>> {
   records: T[]
 }
 
-export const service = createRequestFunction(createService())
+export const service = createNoCacheRequestFunction(createService())
+
+export const cacheService = createRequestFunction(createService())

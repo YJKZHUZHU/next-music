@@ -1,0 +1,26 @@
+.checkbox {
+  :global {
+    .adm-checkbox-icon {
+      --icon-size: 16px;
+      border-radius: 0;
+    }
+    .adm-checkbox-icon {
+      --adm-color-primary: #fb233b;
+    }
+    .adm-checkbox-content {
+      font-size: 14px;
+      color: #7a7a7a;
+    }
+  }
+}
+
+.submitButton {
+  color: #ffffff;
+  font-size: 16px;
+  height: 56px;
+  border-radius: 10px;
+  background: #fb233b;
+  margin-top: 24px;
+  // margin-bottom: 32px;
+  width: 100%;
+}
