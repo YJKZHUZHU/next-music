@@ -1,12 +1,15 @@
-// import {create} from 'zustand'
+import { create } from "zustand"
 
+interface Props {
+  cookie: string
+}
 
-// interface IProps {
+interface Actions {
+  setCookie: (cookie: string) => void
+}
 
-// }
+const useStore = create<Props & Actions>((set) => ({
+  cookie: "",
+  setCookie: (cookie) => set({ cookie }),
 
-// const useStore = create((set) => ({
-//   bears: 0,
-//   increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
-//   removeAllBears: () => set({ bears: 0 }),
-// }));
+}))

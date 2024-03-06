@@ -2,7 +2,7 @@
 import { Button } from "antd-mobile"
 import Image from "next/image"
 import { useRouter } from "next-nprogress-bar"
-import { banner } from "@/api/home"
+import { loginStatus } from "@/api/user"
 import styles from "./index.module.scss"
 import { useEffect } from "react"
 
@@ -11,9 +11,9 @@ function Login() {
   const onLoginLink = (type: "phone" | "email") => {
     router.push(`/login/${type}`)
   }
-  // useEffect(() => {
-  //   banner()
-  // }, [])
+  useEffect(() => {
+    loginStatus()
+  }, [])
   return (
     <div className="bg-white h-[100vh] flex flex-col px-[24px]">
       <p className=" text-[14px] text-[#FB233B] text-right mt-[16px]">立即体验</p>

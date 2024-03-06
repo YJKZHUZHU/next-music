@@ -5,6 +5,7 @@ import { useRouter } from "next-nprogress-bar"
 import Image from "next/image"
 import md5 from "md5"
 import { loginByEmail, loginByPhone } from "@/api/user"
+import Cookie from "js-cookie"
 import { validateEmail } from "@/utils/validateEmail"
 
 import { Header } from "../components"

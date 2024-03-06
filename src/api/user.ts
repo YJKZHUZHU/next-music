@@ -3,6 +3,7 @@ import { service, IResp } from "./index"
 enum FetchEnum {
   loginByEmail = "/login",
   loginByPhone = "/login/cellphone",
+  loginStatus = "/login/status",
 }
 
 interface IloginByEmailParams {
@@ -25,4 +26,8 @@ interface IloginByPhoneParams {
 }
 export const loginByPhone = (data: IloginByPhoneParams) => {
   return service.post(FetchEnum.loginByPhone, data)
+}
+
+export const loginStatus = () => {
+  return service.post(FetchEnum.loginStatus)
 }

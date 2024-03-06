@@ -13,7 +13,7 @@ export interface ErrorRes extends Error {
 function createService() {
   // 创建一个 Axios 实例
   const service = axios.create({
-    withCredentials: false,
+    withCredentials: true,
     // baseURL: (window as any)._global._BASEURL,
   })
 
