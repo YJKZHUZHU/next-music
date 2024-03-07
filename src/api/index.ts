@@ -116,7 +116,7 @@ export function createNoCacheRequestFunction(service: AxiosInstance) {
     // 发送失败
     (error) => Promise.reject(error)
   )
-  service.defaults.baseURL = "https://neteasecloudmusicapi.vercel.app"
+  service.defaults.baseURL = "https://api.douya-music.top"
 
   service.defaults.timeout = 60 * 1000
 
