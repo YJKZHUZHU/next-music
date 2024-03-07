@@ -1,9 +1,12 @@
+import { IAccountInfo } from "@/store/user"
 import { service, IResp } from "./index"
 
 enum FetchEnum {
   loginByEmail = "/login",
   loginByPhone = "/login/cellphone",
   loginStatus = "/login/status",
+  userDetail = "/user/detail",
+  accountDetail = "/user/account",
 }
 
 interface IloginByEmailParams {
@@ -29,5 +32,13 @@ export const loginByPhone = (data: IloginByPhoneParams) => {
 }
 
 export const loginStatus = () => {
-  return service.post(FetchEnum.loginStatus)
+  return service.post<unknown, IResp>(FetchEnum.loginStatus)
+}
+
+export const userDetail = (data: { uid: string }) => {
+  return service.post(FetchEnum.userDetail, data)
+}
+
+export const accountDetail = () => {
+  return service.post<unknown, IResp<IAccountInfo>>(FetchEnum.accountDetail)
 }

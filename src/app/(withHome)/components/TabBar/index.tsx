@@ -24,6 +24,7 @@ function HomeTabBar() {
           width={24}
           height={24}
           alt={name}
+          priority
         />
         <Image
           className={!active ? "hidden" : "inline-block"}
@@ -31,6 +32,7 @@ function HomeTabBar() {
           width={24}
           height={24}
           alt={name}
+          priority
         />
       </>
     )
@@ -75,7 +77,7 @@ function HomeTabBar() {
     router.push(key === EnumTab.home ? "/" : key)
   }
   return (
-    <TabBar safeArea onChange={onChange}>
+    <TabBar activeKey={activeKey} safeArea onChange={onChange}>
       {tabs.map((item) => (
         <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
       ))}

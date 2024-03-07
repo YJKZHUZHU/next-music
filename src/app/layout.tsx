@@ -8,15 +8,12 @@ import Head from "next/head"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "豆芽音乐",
+  title: {
+    template: "%s",
+    default: "豆芽音乐",
+    absolute: "",
+  },
   description: "豆芽音乐",
-  // viewport: {
-  //   width: "device-width",
-  //   initialScale: 1,
-  //   maximumScale: 1,
-  //   minimumScale: 1,
-  //   userScalable: false,
-  // },
 }
 
 export default function RootLayout({
@@ -24,12 +21,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  console.log("rest")
   dynamic(() => import("amfe-flexible"), {
     ssr: false,
   })
 
   return (
-    <html lang="en" style={{ fontSize: "37.5px" }}>
+    <html lang="zh-CN" style={{ fontSize: "37.5px" }}>
       <Head>
         <meta
           name="viewport"

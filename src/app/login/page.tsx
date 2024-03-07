@@ -5,6 +5,12 @@ import { useRouter } from "next-nprogress-bar"
 import { loginStatus } from "@/api/user"
 import styles from "./index.module.scss"
 import { useEffect } from "react"
+import { Metadata } from "next"
+
+// export const metadata: Metadata = {
+//   title: "登录",
+//   description: "登录",
+// }
 
 function Login() {
   const router = useRouter()

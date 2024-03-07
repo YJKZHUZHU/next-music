@@ -1,6 +1,7 @@
 "use client"
 import axios, { AxiosInstance } from "axios"
 import qs from "qs"
+import Cookies from "js-cookie"
 import { redirect } from "next/navigation"
 
 export interface ErrorRes extends Error {

@@ -1,10 +1,12 @@
 "use client"
-import { NavBar, Form, Input, SearchBar, Checkbox, Button, NoticeBar } from "antd-mobile"
-import React, { useMemo, useState } from "react"
+import { NavBar, Toast, Input, SearchBar, Checkbox, Button, NoticeBar } from "antd-mobile"
+import React, { useEffect, useMemo, useState } from "react"
 import { useRouter } from "next-nprogress-bar"
 import Image from "next/image"
 import md5 from "md5"
 import { loginByEmail, loginByPhone } from "@/api/user"
+import { useLoginStore } from "@/store/login"
+import { useUserStore } from "@/store/user"
 import Cookie from "js-cookie"
 import { validateEmail } from "@/utils/validateEmail"
 
@@ -12,6 +14,13 @@ import { Header } from "../components"
 import styles from "./index.module.scss"
 
 function Email() {
+  const [update, storeEmail, storeEmaliPasword, storeIsRember] = useLoginStore((state) => [
+    state.update,
+    state.email,
+    state.emaliPassword,
+    state.emailLoginRember,
+  ])
+  const [setCookie] = useUserStore((state) => [state.setCookie,state.setLogin,])
   const router = useRouter()
   // 18470186610@163.com
   // Yjk@18470186610
@@ -24,6 +33,9 @@ function Email() {
     password: "",
     message: "",
   })
+  const [isRember, setIsRember] = useState(false)
+
+  console.log("storeEmail", storeEmail, storeIsRember)
 
   const validateForm = () => {
     const info = Object.create(null)
@@ -49,11 +61,24 @@ function Email() {
     try {
       const validate = validateForm()
       if (!validate) return
+      Toast.show({
+        icon: "loading",
+        content: "登录中…",
+      })
       setLoading(true)
       const res = await loginByEmail({ email, md5_password: md5(password), timestamp: Date.now() })
       setLoading(false)
+      Cookie.set("cookie", res.data.cookie)
+      setCookie(res.data.cookie)
+      update({
+        email: isRember ? email : "",
+        emaliPassword: isRember ? password : "",
+        emailLoginRember: isRember,
+      })
+      Toast.clear()
       if (res.success) {
-        window.location.href = "/"
+        router.push("/")
+        // window.location.href = "/"
         return
       }
       setRule({
@@ -61,6 +86,7 @@ function Email() {
         message: res.message,
       })
     } catch (error) {
+      Toast.clear()
       setLoading(false)
       console.log("error", error)
     }
@@ -71,6 +97,15 @@ function Email() {
   const active = useMemo(() => {
     return !!(email || password)
   }, [email, password])
+
+  useEffect(() => {
+    console.log("执行几次", storeIsRember)
+    if (storeIsRember) {
+      storeEmail && setEmail(storeEmail)
+      storeEmaliPasword && setPassword(storeEmaliPasword)
+      setIsRember(storeIsRember)
+    }
+  }, [storeIsRember])
 
   return (
     <div className="flex flex-col">
@@ -87,6 +122,7 @@ function Email() {
                 width={24}
                 height={24}
                 alt=""
+                priority
               />
               <Image
                 className={email ? " inline-block" : "hidden"}
@@ -94,6 +130,7 @@ function Email() {
                 width={24}
                 height={24}
                 alt=""
+                priority
               />
               <Input
                 disabled={loading}
@@ -112,6 +149,7 @@ function Email() {
                 width={24}
                 height={24}
                 alt=""
+                priority
               />
               <Image
                 className={password ? " inline-block" : "hidden"}
@@ -119,6 +157,7 @@ function Email() {
                 width={24}
                 height={24}
                 alt=""
+                priority
               />
 
               <Input
@@ -136,6 +175,7 @@ function Email() {
                 width={24}
                 height={24}
                 alt=""
+                priority
               />
               <Image
                 onClick={() => setVisiblePassword(true)}
@@ -144,6 +184,7 @@ function Email() {
                 width={24}
                 height={24}
                 alt=""
+                priority
               />
             </div>
             {rule.password && (
@@ -152,7 +193,9 @@ function Email() {
           </div>
 
           <div className="w-[100%] flex justify-between items-center text-[#7A7A7A] text-[14px]">
-            <Checkbox className={styles.checkbox}>记住我</Checkbox>
+            <Checkbox checked={isRember} onChange={setIsRember} className={styles.checkbox}>
+              记住我
+            </Checkbox>
             <span className=" leading-[20px]">忘记密码?</span>
           </div>
         </div>

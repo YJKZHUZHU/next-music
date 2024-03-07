@@ -6,7 +6,7 @@ const nextConfig = {
     includePaths: [path.join(__dirname, "src")],
   },
   transpilePackages: ["antd-mobile"],
-  reactStrictMode: true,
+  reactStrictMode: false, // 关闭该特性，nextjs 18 useEffect 会执行两次
   // async rewrites() {
   //   return [
   //     {
