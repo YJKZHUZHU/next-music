@@ -89,7 +89,7 @@ function createService() {
 }
 
 export function createRequestFunction(service: AxiosInstance) {
-  service.defaults.baseURL = "https://neteasecloudmusicapi.vercel.app"
+  service.defaults.baseURL = "https://api.douya-music.top"
 
   service.defaults.timeout = 60 * 1000
 
