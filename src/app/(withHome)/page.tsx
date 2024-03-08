@@ -45,7 +45,7 @@ export default function Home() {
       <div className=" flex justify-between items-center gap-[12px]">
         <div className="flex flex-col gap-[3px]">
           <span className=" text-[24px] text-[#121212] leading-[32px] font-[600]">
-            Hai, {`${userInfo?.profile?.nickname || ""}`}
+            Hai, {`${userInfo?.profile?.nickname || "游客"}`}
           </span>
           <span className=" text-[14px] leading-[20px] text-[ #454545]">不早不晚，刚好是你</span>
         </div>
@@ -53,15 +53,22 @@ export default function Home() {
           <Image src="/home/history@2x.png" width={24} height={24} alt="" />
         </div>
       </div>
-      <div>
-        <Swiper
-          loop
-          autoplay={false}
-          onIndexChange={(i) => {
-            console.log(i, "onIndexChange1")
-          }}>
-          {items}
-        </Swiper>
+      <Swiper
+        loop
+        autoplay={false}
+        onIndexChange={(i) => {
+          console.log(i, "onIndexChange1")
+        }}>
+        {items}
+      </Swiper>
+      <div className=" flex flex-col gap-[24px]  ">
+        <div className=" flex justify-between items-center gap-[12px]">
+          <span className=" text-[18px] text-[#121212] leading-[24px] font-[500]">推荐歌单</span>
+          <span className=" text-[14px] text-[#FB233B] leading-[20px]">查看全部</span>
+        </div>
+        <div>
+          
+        </div>
       </div>
     </div>
   )
