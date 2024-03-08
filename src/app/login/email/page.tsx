@@ -20,7 +20,7 @@ function Email() {
     state.emaliPassword,
     state.emailLoginRember,
   ])
-  const [setCookie] = useUserStore((state) => [state.setCookie,state.setLogin,])
+  const [setCookie, setLogin] = useUserStore((state) => [state.setCookie, state.setLogin])
   const router = useRouter()
   // 18470186610@163.com
   // Yjk@18470186610
@@ -68,8 +68,11 @@ function Email() {
       setLoading(true)
       const res = await loginByEmail({ email, md5_password: md5(password), timestamp: Date.now() })
       setLoading(false)
-      Cookie.set("cookie", res.data.cookie)
-      setCookie(res.data.cookie)
+      console.log("11111", res.data.cookie)
+      // Cookie.set("cookie", res.data.cookie)
+      // Cookie.set("11111", "111")
+      // setCookie(res.data.cookie)
+      setLogin(true)
       update({
         email: isRember ? email : "",
         emaliPassword: isRember ? password : "",

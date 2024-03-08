@@ -20,18 +20,21 @@ function createService() {
 
   service.interceptors.response.use(
     (response) => {
-      console.log("response.data", response)
-      const { code, ...data } = response.data
-      if (response.data.code === 200) {
+      const code = response.data.code || response.data?.data?.code
+      const data = response.data || response.data?.data
+
+      console.log("==response==", data)
+      if (code === 200) {
         return {
           code,
           message: "",
           success: true,
-          data,
-        }
+          data: data.data || data,
+        } as any
       }
       return {
-        ...response.data,
+        ...(data.data || data),
+        code,
         success: false,
       }
     },

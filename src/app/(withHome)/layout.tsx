@@ -8,9 +8,9 @@ export const metadata: Metadata = {
 
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="h-[100%] ">
-      <div>{children}</div>
-      <div className="fixed bottom-[0px] w-[100vw]">
+    <div className="h-[100vh] flex flex-col">
+      <div className="flex-1 pb-[80px]">{children}</div>
+      <div className="fixed bottom-[0px] w-[100vw] h-[80px]">
         <TabBar />
       </div>
     </div>

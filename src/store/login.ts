@@ -12,6 +12,7 @@ interface Props {
 
 interface Actions {
   update: (obj: Partial<Props>) => void
+
 }
 
 const initialState = {

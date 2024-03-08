@@ -1,6 +1,50 @@
-import { service } from "./index"
+import { IResp, service } from "./index"
 
-export const banner = () => {
-  return service.get("/search?keywords=海阔天空")
-  // return service.get("/search")
+enum EnumFeatch {
+  banner = "/banner",
+}
+
+export interface IBanner {
+  adDispatchJson: string | null
+  adLocation: string | null
+  adSource: string | null
+  adid: string | null
+  encodeId: string | null
+  event: string | null
+  exclusive: boolean
+  extMonitor: string | null
+  extMonitorInfo: string | null
+  imageUrl: string
+  monitorBlackList: string | null
+  monitorClick: string | null
+  monitorClickList: string | null
+  monitorImpress: string | null
+  monitorImpressList: string | null
+  monitorType: string | null
+  program: string | null
+  scm: string | null
+  song: string | null
+  targetId: number
+  targetType: number
+  titleColor: string
+  typeTitle: string
+  url: string | null
+  video: string | null
+  pic: string
+}
+interface IBannerRes {
+  banners: IBanner[]
+}
+export enum EnumBannerType {
+  pc,
+  android,
+  iphone,
+  ipad,
+}
+
+interface IBannerParams {
+  type: EnumBannerType
+}
+export const banner = (data: IBannerParams) => {
+  return service.post<IBannerParams, IResp<IBannerRes>>(EnumFeatch.banner, data)
 }

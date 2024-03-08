@@ -7,6 +7,9 @@ const nextConfig = {
   },
   transpilePackages: ["antd-mobile"],
   reactStrictMode: false, // 关闭该特性，nextjs 18 useEffect 会执行两次
+  images: {
+    domains: ["p1.music.126.net"],
+  },
   // async rewrites() {
   //   return [
   //     {

@@ -3,6 +3,7 @@ import { Badge, TabBar } from "antd-mobile"
 import Image from "next/image"
 import { useRouter } from "next-nprogress-bar"
 import { useState } from "react"
+import styles from "./index.module.scss"
 
 enum EnumTab {
   home = "home",
@@ -14,8 +15,8 @@ function HomeTabBar() {
   const router = useRouter()
   const [activeKey, setActiveKey] = useState(EnumTab.home)
   const randerIcon = (active: boolean, name: EnumTab) => {
-    const path = `/home/${name}@2x.png`
-    const activePath = `/home/${name}_active@2x.png`
+    const path = `/home/tabBar/${name}@2x.png`
+    const activePath = `/home/tabBar/${name}_active@2x.png`
     return (
       <>
         <Image
@@ -77,7 +78,11 @@ function HomeTabBar() {
     router.push(key === EnumTab.home ? "/" : key)
   }
   return (
-    <TabBar activeKey={activeKey} safeArea onChange={onChange}>
+    <TabBar
+      className={`h-[100%] ${styles.tabBar} border-[#F5F5F5] border-t-[1px] border-solid`}
+      activeKey={activeKey}
+      safeArea
+      onChange={onChange}>
       {tabs.map((item) => (
         <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
       ))}

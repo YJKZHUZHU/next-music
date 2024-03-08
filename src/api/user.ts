@@ -1,4 +1,4 @@
-import { IAccountInfo } from "@/store/user"
+import { IAccountInfo, IUserInfo } from "@/store/user"
 import { service, IResp } from "./index"
 
 enum FetchEnum {
@@ -36,7 +36,7 @@ export const loginStatus = () => {
 }
 
 export const userDetail = (data: { uid: string }) => {
-  return service.post(FetchEnum.userDetail, data)
+  return service.post<unknown, IResp<IUserInfo>>(FetchEnum.userDetail, data)
 }
 
 export const accountDetail = () => {

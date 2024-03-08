@@ -1,26 +1,31 @@
 "use client"
 import React, { useEffect } from "react"
 import { usePathname } from "next/navigation"
+import { shallow } from "zustand/shallow"
+import { createWithEqualityFn } from "zustand/traditional"
 import { useUserStore } from "@/store/user"
 import { accountDetail, userDetail, loginStatus } from "@/api/user"
 import { Metadata } from "next"
+import { useLoginStatus } from "@/hooks/useLoginStatus"
 
 function Template({ children }: { children: React.ReactNode }) {
-  const [login, uid, setAccountInfo, setUid] = useUserStore((state) => [
+  const [login, setAccountInfo, setUid, setLogin, setUserInfo] = useUserStore((state) => [
     state.login,
-    state.uid,
     state.setAccountInfo,
     state.setUid,
+    state.setLogin,
+    state.setUserInfo,
   ])
   const pathName = usePathname()
-  console.log("params", pathName)
 
   const getLoginStatus = async () => {
     if (login) return
     try {
       const res = await loginStatus()
-      // if()
-      // if(res.data)
+      console.log("ssss", res)
+      const result = !!res.data.account
+      setLogin(result)
+      return result
     } catch (error) {
       console.log("error", error)
     }
@@ -32,12 +37,12 @@ function Template({ children }: { children: React.ReactNode }) {
       const res = await accountDetail()
       if (res.success) {
         setAccountInfo(res.data)
-        console.log("111", res.data.profile.userId)
+
         const userId = res.data.profile.userId
         userId && setUid(userId)
-        userId && getUserDetail(userId)
+        return userId
       }
-      console.log("res==", res.data)
+      return ""
     } catch (error) {
       console.log("error", error)
     }
@@ -46,22 +51,26 @@ function Template({ children }: { children: React.ReactNode }) {
   // 用户信息
   const getUserDetail = async (userId: number) => {
     try {
-      console.log("uid", userId)
       const res = await userDetail({ uid: String(userId) })
+      console.log("用户信息", res)
+      if (res.success) {
+        setUserInfo(res.data)
+      }
     } catch (error) {
       console.log("error", error)
     }
   }
 
   const init = async () => {
-    await getLoginStatus()
-    await getAccountInfo()
-    // await getUserDetail()
+    const loginStatus = await getLoginStatus()
+    if (!loginStatus) return
+    const userId = await getAccountInfo()
+    userId && (await getUserDetail(userId))
   }
 
   useEffect(() => {
     init()
-  }, [login])
+  }, [])
 
   return <div>{children}</div>
 }

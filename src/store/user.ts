@@ -76,7 +76,7 @@ interface IIdentify {
   [props: string]: any
 }
 
-interface IUserInfo {
+export interface IUserInfo {
   adValid: boolean
   bindings: IBindings[]
   code: number
@@ -119,10 +119,11 @@ interface Actions {
   setLogin: (cookie: boolean) => void
   setUid: (uid: string | number) => void
   setAccountInfo: (accountInfo: IAccountInfo) => void
+  setUserInfo: (userInfo: IUserInfo) => void
 }
 
 const initialState: Props = {
-  cookie: Cookies.get("cookie") || "",
+  cookie: "",
   login: false,
   uid: "",
   accountInfo: {},
@@ -134,9 +135,10 @@ export const useUserStore = create<Props & Actions>()(
     (set) => ({
       ...initialState,
       setCookie: (cookie) => set({ cookie }, false, "设置cookie"),
-      setLogin: (login) => set({ login }, false, "设置cookie"),
+      setLogin: (login) => set({ login }, false, "设置登录状态"),
       setUid: (uid) => set({ uid }, false, "设置uid"),
       setAccountInfo: (accountInfo) => set({ accountInfo }, false, "设置账户信息"),
+      setUserInfo: (userInfo) => set({ userInfo }, false, "设置用户信息"),
     }),
     {
       name: "userStore",
