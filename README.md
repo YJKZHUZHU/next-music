@@ -23,3 +23,7 @@
 ### 样式 tailwind
 
 1. [https://www.tailwindcss.cn](https://www.tailwindcss.cn)
+
+### redux平替 zustand
+1. [官方文档](https://github.com/pmndrs/zustand?tab=readme-ov-file)
+2. [最佳实践](https://juejin.cn/post/7203262276572823609#heading-0)

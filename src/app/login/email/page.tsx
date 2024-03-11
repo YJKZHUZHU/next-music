@@ -12,6 +12,7 @@ import { validateEmail } from "@/utils/validateEmail"
 
 import { Header } from "../components"
 import styles from "./index.module.scss"
+import { EnumLocalStorage, setItem, setLoginCache } from "@/utils/cache"
 
 function Email() {
   const [update, storeEmail, storeEmaliPasword, storeIsRember] = useLoginStore((state) => [
@@ -20,7 +21,6 @@ function Email() {
     state.emaliPassword,
     state.emailLoginRember,
   ])
-  const [setCookie, setLogin] = useUserStore((state) => [state.setCookie, state.setLogin])
   const router = useRouter()
   // 18470186610@163.com
   // Yjk@18470186610
@@ -66,13 +66,12 @@ function Email() {
         content: "登录中…",
       })
       setLoading(true)
-      const res = await loginByEmail({ email, md5_password: md5(password), timestamp: Date.now() })
+      const res = await loginByEmail({ email, md5_password: md5(password) })
+      console.log("res--", res)
+      setLoginCache(false, true, res.data.profile.userId, res.data.cookie)
       setLoading(false)
-      console.log("11111", res.data.cookie)
-      // Cookie.set("cookie", res.data.cookie)
-      // Cookie.set("11111", "111")
-      // setCookie(res.data.cookie)
-      setLogin(true)
+      // setItem(EnumLocalStorage.cookie,res.data)
+      // setLogin(true)
       update({
         email: isRember ? email : "",
         emaliPassword: isRember ? password : "",
@@ -80,8 +79,8 @@ function Email() {
       })
       Toast.clear()
       if (res.success) {
-        router.push("/")
-        // window.location.href = "/"
+        // router.push("/")
+        window.location.href = "/"
         return
       }
       setRule({

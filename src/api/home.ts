@@ -2,6 +2,8 @@ import { IResp, service } from "./index"
 
 enum EnumFeatch {
   banner = "/banner",
+  songs = "/personalized",
+  resource = "/recommend/resource",
 }
 
 export interface IBanner {
@@ -47,4 +49,12 @@ interface IBannerParams {
 }
 export const banner = (data: IBannerParams) => {
   return service.post<IBannerParams, IResp<IBannerRes>>(EnumFeatch.banner, data)
+}
+
+interface ISongsParams {
+  limit: number
+}
+
+export const songs = (data: ISongsParams) => {
+  return service.post<ISongsParams, IResp<IBannerRes>>(EnumFeatch.songs, data)
 }

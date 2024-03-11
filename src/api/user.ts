@@ -7,6 +7,8 @@ enum FetchEnum {
   loginStatus = "/login/status",
   userDetail = "/user/detail",
   accountDetail = "/user/account",
+  anonimous = "/register/anonimous",
+  logout = "/logout",
 }
 
 interface IloginByEmailParams {
@@ -18,7 +20,7 @@ interface IloginByEmailParams {
 }
 
 export const loginByEmail = (data: IloginByEmailParams) => {
-  return service.post<IloginByEmailParams, IResp>(FetchEnum.loginByEmail, data)
+  return service.post<IloginByEmailParams, IResp<any>>(FetchEnum.loginByEmail, data)
 }
 
 interface IloginByPhoneParams {
@@ -32,7 +34,7 @@ export const loginByPhone = (data: IloginByPhoneParams) => {
 }
 
 export const loginStatus = () => {
-  return service.post<unknown, IResp>(FetchEnum.loginStatus)
+  return service.post<unknown, IResp<any>>(FetchEnum.loginStatus)
 }
 
 export const userDetail = (data: { uid: string }) => {
@@ -41,4 +43,19 @@ export const userDetail = (data: { uid: string }) => {
 
 export const accountDetail = () => {
   return service.post<unknown, IResp<IAccountInfo>>(FetchEnum.accountDetail)
+}
+
+interface IAnonimousResp {
+  cookie: string
+  createTime: number
+  userId: number
+}
+/** 游客登录 */
+export const anonimous = () => {
+  return service.post<unknown, IResp<IAnonimousResp>>(FetchEnum.anonimous)
+}
+
+/** 退出登录 */
+export const logout = () => {
+  return service.post<unknown, IResp<any>>(FetchEnum.logout)
 }

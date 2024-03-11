@@ -1,6 +1,5 @@
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
-import Cookies from "js-cookie"
 
 interface IAccount {
   anonimousUser: boolean
@@ -107,25 +106,16 @@ export interface IAccountInfo {
 }
 
 interface Props {
-  cookie: string
-  login: boolean
-  uid: string | number
   accountInfo: Partial<IAccountInfo> // 账号信息
   userInfo: Partial<IUserInfo> // 用户信息
 }
 
 interface Actions {
-  setCookie: (cookie: string) => void
-  setLogin: (cookie: boolean) => void
-  setUid: (uid: string | number) => void
   setAccountInfo: (accountInfo: IAccountInfo) => void
   setUserInfo: (userInfo: IUserInfo) => void
 }
 
 const initialState: Props = {
-  cookie: "",
-  login: false,
-  uid: "",
   accountInfo: {},
   userInfo: {},
 }
@@ -134,9 +124,6 @@ export const useUserStore = create<Props & Actions>()(
   devtools(
     (set) => ({
       ...initialState,
-      setCookie: (cookie) => set({ cookie }, false, "设置cookie"),
-      setLogin: (login) => set({ login }, false, "设置登录状态"),
-      setUid: (uid) => set({ uid }, false, "设置uid"),
       setAccountInfo: (accountInfo) => set({ accountInfo }, false, "设置账户信息"),
       setUserInfo: (userInfo) => set({ userInfo }, false, "设置用户信息"),
     }),
