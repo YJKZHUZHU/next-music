@@ -1,5 +1,7 @@
 const path = require("path")
 
+console.log("process.env", process.env)
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   sassOptions: {
@@ -9,6 +11,9 @@ const nextConfig = {
   reactStrictMode: false, // 关闭该特性，nextjs 18 useEffect 会执行两次
   images: {
     domains: ["p1.music.126.net"],
+  },
+  env: {
+    V_CONSOLE: process.env.V_CONSOLE,
   },
   // async rewrites() {
   //   return [

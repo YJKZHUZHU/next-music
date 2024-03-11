@@ -2,12 +2,14 @@
 import React, { useEffect } from "react"
 import { usePathname } from "next/navigation"
 import Script from "next/script"
+import getConfig from "next/config"
 import { useShallow } from "zustand/react/shallow"
 import { useUserStore } from "@/store/user"
 import { useRouter } from "next-nprogress-bar"
 import { accountDetail, userDetail, anonimous } from "@/api/user"
 import { login, setLoginCache, EnumLocalStorage, getItem } from "@/utils/cache"
 import { refreshLogin } from "@/utils/refreshLogin"
+import { showVConsole } from "@/utils/env"
 
 declare var VConsole: any
 
@@ -76,12 +78,15 @@ function Template({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <Script
-        src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"
-        onReady={() => {
-          new VConsole()
-        }}
-      />
+      {showVConsole && (
+        <Script
+          src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"
+          onReady={() => {
+            new VConsole()
+          }}
+        />
+      )}
+
       {children}
     </>
   )

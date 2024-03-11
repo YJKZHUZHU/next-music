@@ -1,6 +1,6 @@
-'use client'
+"use client"
 import { EnumBannerType, IBanner, banner } from "@/api/home"
-import { Swiper, Image } from "antd-mobile"
+import { Swiper, Image, Skeleton } from "antd-mobile"
 import { useEffect, useMemo, useState } from "react"
 
 function HomeBanner() {
@@ -33,6 +33,9 @@ function HomeBanner() {
   useEffect(() => {
     getBanner()
   }, [])
+  if (bannerList.length === 0) {
+    return <Skeleton.Paragraph className=" h-[180px]" animated lineCount={6} />
+  }
   return (
     <Swiper
       loop

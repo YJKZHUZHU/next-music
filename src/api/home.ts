@@ -3,6 +3,7 @@ import { IResp, service } from "./index"
 enum EnumFeatch {
   banner = "/banner",
   songs = "/personalized",
+  /** 每日推荐歌单 */
   resource = "/recommend/resource",
 }
 
@@ -55,6 +56,23 @@ interface ISongsParams {
   limit: number
 }
 
+export interface ISongsItem {
+  alg: string
+  canDislike: boolean
+  copywriter: string | null
+  highQuality: boolean
+  id: number
+  name: string
+  picUrl: string
+  playCount: number
+  trackCount: number
+  trackNumberUpdateTime: number
+  type: number
+}
 export const songs = (data: ISongsParams) => {
-  return service.post<ISongsParams, IResp<IBannerRes>>(EnumFeatch.songs, data)
+  return service.post<ISongsParams, IResp<{result:ISongsItem[]}>>(EnumFeatch.songs, data)
+}
+
+export const resource = () => {
+  return service.post<ISongsParams, IResp<IBannerRes>>(EnumFeatch.resource)
 }
