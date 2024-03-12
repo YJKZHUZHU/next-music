@@ -106,7 +106,7 @@ export function createNoCacheRequestFunction(service: AxiosInstance) {
     (config) => {
       const [url, queryString] = config.url?.split("?") || []
       let obj = Object.create(null)
-      // obj.timestamp = Date.now()
+      obj.timestamp = Date.now()
       if (queryString) {
         obj = {
           ...obj,

@@ -1,10 +1,16 @@
 "use client"
 import { EnumBannerType, IBanner, banner } from "@/api/home"
-import { Swiper, Image, Skeleton } from "antd-mobile"
-import { useEffect, useMemo, useState } from "react"
+import { Swiper, Image } from "antd-mobile"
+import Skeleton from "react-loading-skeleton"
+import { FC, useEffect, useMemo, useState } from "react"
 
-function HomeBanner() {
+interface Props {
+  className?: string
+}
+const HomeBanner: FC<Props> = (props) => {
+  const { className } = props
   const [bannerList, setBannerList] = useState<IBanner[]>([])
+  const [loading, setLoading] = useState(false)
   const items = useMemo(() => {
     return bannerList.map((item) => (
       <Swiper.Item key={item.url}>
@@ -20,12 +26,15 @@ function HomeBanner() {
 
   const getBanner = async () => {
     try {
+      setLoading(true)
       const res = await banner({ type: EnumBannerType.iphone })
-      console.log("res--banner", res)
+
       if (res.success) {
         setBannerList(res.data.banners)
       }
+      setLoading(false)
     } catch (error) {
+      setLoading(false)
       console.log("error", error)
     }
   }
@@ -33,18 +42,17 @@ function HomeBanner() {
   useEffect(() => {
     getBanner()
   }, [])
-  if (bannerList.length === 0) {
-    return <Skeleton.Paragraph className=" h-[180px]" animated lineCount={6} />
-  }
+
   return (
-    <Swiper
-      loop
-      autoplay={false}
-      onIndexChange={(i) => {
-        console.log(i, "onIndexChange1")
-      }}>
-      {items}
-    </Swiper>
+    <>
+      {loading || bannerList.length === 0 ? (
+        <Skeleton className="h-[180px]" />
+      ) : (
+        <Swiper className={className} loop autoplay={false}>
+          {items}
+        </Swiper>
+      )}
+    </>
   )
 }
 

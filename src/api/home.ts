@@ -5,6 +5,8 @@ enum EnumFeatch {
   songs = "/personalized",
   /** 每日推荐歌单 */
   resource = "/recommend/resource",
+  /** 每日推荐歌曲 */
+  recommendSongs = "/recommend/songs",
 }
 
 export interface IBanner {
@@ -70,9 +72,68 @@ export interface ISongsItem {
   type: number
 }
 export const songs = (data: ISongsParams) => {
-  return service.post<ISongsParams, IResp<{result:ISongsItem[]}>>(EnumFeatch.songs, data)
+  return service.post<ISongsParams, IResp<{ result: ISongsItem[] }>>(EnumFeatch.songs, data)
 }
 
+interface ICreator {
+  accountStatus: number
+  authStatus: number
+  authority: number
+  avatarImgId: number
+  avatarImgIdStr: string
+  avatarUrl: string
+  backgroundImgId: number
+  backgroundImgIdStr: string
+  backgroundUrl: string
+  birthday: number
+  city: number
+  defaultAvatar: false
+  description: string
+  detailDescription: string
+  djStatus: number
+  expertTags: null
+  followed: false
+  gender: number
+  mutual: false
+  nickname: string
+  province: number
+  remarkName: null | string
+  signature: string
+  userId: number
+  userType: number
+  vipType: number
+}
+export interface IResourceItem {
+  alg: string
+  copywriter: string
+  createTime: number
+  creator: ICreator
+  id: number
+  name: string
+  picUrl: string
+  playcount: number
+  trackCount: number
+  type: number
+  userId: number
+}
 export const resource = () => {
-  return service.post<ISongsParams, IResp<IBannerRes>>(EnumFeatch.resource)
+  return service.post<
+    unknown,
+    IResp<{
+      featureFirst: boolean
+      haveRcmdSongs: boolean
+      recommend: IResourceItem[]
+    }>
+  >(EnumFeatch.resource)
+}
+
+export const recommendSongs = () => {
+  return service.post<
+    unknown,
+    IResp<{
+      featureFirst: boolean
+      haveRcmdSongs: boolean
+      recommend: IResourceItem[]
+    }>
+  >(EnumFeatch.recommendSongs)
 }

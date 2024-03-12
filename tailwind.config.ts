@@ -1,4 +1,5 @@
-import type { Config } from "tailwindcss";
+const plugin = require("tailwindcss/plugin")
+import type { Config } from "tailwindcss"
 
 const config: Config = {
   content: [
@@ -10,11 +11,25 @@ const config: Config = {
     extend: {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
     },
   },
-  plugins: [],
-};
-export default config;
+  plugins: [
+    plugin(({ addUtilities }: any) => {
+      addUtilities({
+        ".scrollbar-hide": {
+          /* IE and Edge */
+          "-ms-overflow-style": "none",
+          /* Firefox */
+          "scrollbar-width": "none",
+          /* Safari and Chrome */
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+        },
+      })
+    })
+  ],
+}
+export default config

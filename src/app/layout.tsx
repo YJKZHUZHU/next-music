@@ -5,6 +5,7 @@ import dynamic from "next/dynamic"
 import Providers from "@/components/ProgressBarProvider"
 import Head from "next/head"
 
+
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {

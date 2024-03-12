@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url("react-loading-skeleton/dist/skeleton.css");
 
 body {
   min-height: 100vh;
