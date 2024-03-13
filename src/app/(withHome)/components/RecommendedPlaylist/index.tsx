@@ -1,12 +1,12 @@
 "use client"
 import { useEffect, useMemo, useState } from "react"
-import { songs, resource, ISongsItem, IResourceItem,recommendSongs } from "@/api/home"
+import { songs, resource, ISongsItem, IResourceItem, recommendSongs } from "@/api/home"
 import { Swiper, Image } from "antd-mobile"
 import Skeleton from "react-loading-skeleton"
 import { tranNumber } from "@/utils/tranNumber"
 import { Triangle } from "@/components"
 
-const skeletonArr = [...new Array(4).keys()]
+const skeletonArr = [...new Array(5).keys()]
 
 const Empty = () => {
   return (
@@ -54,7 +54,7 @@ function RecommendedPlaylist() {
   const getData = async () => {
     try {
       setLoading(true)
-      await Promise.race([getSongs(), getResource()])
+      await Promise.all([getSongs(), getResource()])
       setLoading(false)
     } catch (error) {
       setLoading(false)
@@ -106,9 +106,10 @@ function RecommendedPlaylist() {
                 className="!rounded-[16px] !h-[140px]">
                 {swiperItems}
               </Swiper>
-              <div className="mt-[8px] text-[14px] leading-[18px] text-[#121212]">
+              <div className="mt-[8px] text-[14px] leading-[18px] text-[#121212] line-clamp-2 animate-out fade-in">
                 {bannerList[index]?.name}
               </div>
+             
             </div>
             {list.map((item) => {
               return (

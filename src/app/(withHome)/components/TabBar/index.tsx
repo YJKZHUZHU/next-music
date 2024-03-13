@@ -1,6 +1,7 @@
 "use client"
 import { Badge, TabBar } from "antd-mobile"
 import Image from "next/image"
+import { usePathname } from "next/navigation"
 import { useRouter } from "next-nprogress-bar"
 import { useState } from "react"
 import styles from "./index.module.scss"
@@ -12,8 +13,10 @@ enum EnumTab {
   search = "search",
 }
 function HomeTabBar() {
+  const pathName = usePathname()
+  console.log("pathName", pathName)
   const router = useRouter()
-  const [activeKey, setActiveKey] = useState(EnumTab.home)
+  const [activeKey, setActiveKey] = useState(pathName.replace("/", "") || EnumTab.home)
   const randerIcon = (active: boolean, name: EnumTab) => {
     const path = `/home/tabBar/${name}@2x.png`
     const activePath = `/home/tabBar/${name}_active@2x.png`

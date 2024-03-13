@@ -10,7 +10,8 @@ const nextConfig = {
   transpilePackages: ["antd-mobile"],
   reactStrictMode: false, // 关闭该特性，nextjs 18 useEffect 会执行两次
   images: {
-    domains: ["p1.music.126.net"],
+    domains: ["p1.music.126.net", "p6.music.126.net", "p5.music.126.net"],
+    // remotePatterns: ['/p1.music.126.net/'],
   },
   env: {
     V_CONSOLE: process.env.V_CONSOLE,

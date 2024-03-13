@@ -21,7 +21,6 @@ function Login() {
     try {
       setLoading(true)
       const res = await anonimous()
-      console.log("res--", res)
       setLoading(false)
       if (res.success) {
         setLoginCache(true, false, res.data.userId, res.data.cookie)

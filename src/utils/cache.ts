@@ -13,7 +13,6 @@ export const removeItem = (key: EnumLocalStorage) => window.localStorage.removeI
 export const getItem = (key: EnumLocalStorage) => {
   const result = window.localStorage.getItem(key)
   if ([EnumLocalStorage.visitor, EnumLocalStorage.login].includes(key)) {
-    console.log("--result--", result)
     if (result !== null) {
       return result === "true"
     }

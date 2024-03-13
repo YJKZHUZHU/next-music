@@ -1,45 +1,58 @@
 "use client"
-import { useUserStore } from "@/store/user"
-import Image from "next/image"
-import { Button } from "antd-mobile"
-import { useRouter } from "next-nprogress-bar"
-import { HomeBanner, RecommendedPlaylist } from "./components"
+import { Block, homepage } from "@/api/home"
+import { PullToRefresh } from "antd-mobile"
+import { NoSSR } from "@/components"
+import { useHomePageStore } from "@/store/homePage"
+import { HomeBanner, RecommendedPlaylist, Top, Resources } from "./components"
+import { useEffect, useState } from "react"
 
 export default function Home() {
-  const [userInfo] = useUserStore((state) => [state.userInfo])
-  const router = useRouter()
-  const onLink = () => {
-    router.push("/dailyRecommendation")
-    // daily recommendation
+  // const [pageList, setPageList] = useState<Block[]>([])
+  const [setPageList, setLoading] = useHomePageStore((state) => [
+    state.setPageList,
+    state.setLoading,
+  ])
+
+  const getData = async () => {
+    try {
+      setLoading(true)
+      const res = await homepage({ refresh: true })
+      console.log("res--", res)
+      setPageList(res.data.blocks)
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+      console.log("error", error)
+    }
+  }
+  const onRefresh = async () => {
+    try {
+    } catch (error) {}
   }
 
+  useEffect(() => {
+    getData()
+  }, [])
   return (
-    <div className="flex flex-col  py-[16px] gap-[32px]">
-      <div className="px-[24px] flex justify-between items-center gap-[12px]">
-        <div className="flex flex-col gap-[3px]">
-          <span className=" text-[24px] text-[#121212] leading-[32px] font-[600]">
-            Hi {`${userInfo?.profile?.nickname || "游客"}`}
-          </span>
-          <span className=" text-[14px] leading-[20px] text-[ #454545]">不早不晚，刚好是你</span>
-        </div>
-        <div className="w-[40px] h-[40px]  rounded-[50%] bg-[#F5F5F5] flex justify-center items-center">
-          <Image priority src="/home/history@2x.png" width={24} height={24} alt="" />
-        </div>
-      </div>
-      <div className="px-[24px]">
-        <HomeBanner />
-      </div>
+    <PullToRefresh onRefresh={onRefresh}>
+      <div className="flex flex-col  py-16 gap-32">
+        <Top />
 
-      <div className=" flex flex-col gap-[24px]  ">
-        <div className=" flex justify-between items-center gap-[12px] px-[24px]">
-          <span className=" text-[18px] text-[#121212] leading-[24px] font-[500]">推荐歌单</span>
-          <span className=" text-[14px] text-[#FB233B] leading-[20px]">查看全部</span>
+        <div className="px-[24px]">
+          <HomeBanner />
         </div>
-        <RecommendedPlaylist />
+        <div className="px-[24px]">
+          <Resources />
+        </div>
+
+        <div className=" flex flex-col gap-[24px]  ">
+          <div className=" flex justify-between items-center gap-[12px] px-[24px]">
+            <span className=" text-[18px] text-[#121212] leading-[24px] font-[500]">推荐歌单</span>
+            <span className=" text-[14px] text-[#FB233B] leading-[20px]">查看全部</span>
+          </div>
+          <RecommendedPlaylist />
+        </div>
       </div>
-      {/* <Button className=" hidden" onClick={onLink}>
-        每日推荐
-      </Button> */}
-    </div>
+    </PullToRefresh>
   )
 }

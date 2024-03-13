@@ -2,3 +2,7 @@ export { default as TabBar } from "./TabBar"
 export { default as HomeBanner } from "./HomeBanner"
 /** 推荐歌单 */
 export { default as RecommendedPlaylist } from "./RecommendedPlaylist"
+
+export { default as Top } from "./Top"
+
+export { default as Resources } from "./Resources"

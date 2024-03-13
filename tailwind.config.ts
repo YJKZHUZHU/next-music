@@ -1,5 +1,15 @@
 const plugin = require("tailwindcss/plugin")
 import type { Config } from "tailwindcss"
+import { KeyValuePair, ResolvableTo } from "tailwindcss/types/config"
+
+const setPx = () => {
+  const array: any[] = [...new Array(1000).keys()]
+
+  return array.reduce((map, _, index) => {
+    map[index] = `${index}px`
+    return map
+  }, {} as ResolvableTo<KeyValuePair<string, string>>)
+}
 
 const config: Config = {
   content: [
@@ -9,27 +19,22 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      },
+      lineHeight: setPx(),
+      gap: setPx(),
+      fontSize: setPx(),
+      padding: setPx(),
+      margin: setPx(),
+      width: setPx(),
+      height: setPx(),
+      borderWidth: setPx(),
     },
   },
   plugins: [
-    plugin(({ addUtilities }: any) => {
-      addUtilities({
-        ".scrollbar-hide": {
-          /* IE and Edge */
-          "-ms-overflow-style": "none",
-          /* Firefox */
-          "scrollbar-width": "none",
-          /* Safari and Chrome */
-          "&::-webkit-scrollbar": {
-            display: "none",
-          },
-        },
-      })
-    })
+    require("tailwindcss-animate"),
+    require("tailwind-scrollbar-hide"),
+    // require("postcss-rem-to-responsive-pixel")({
+    //   rootValue: 37.5,
+    // }),
   ],
 }
 export default config

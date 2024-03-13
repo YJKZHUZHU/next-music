@@ -8,11 +8,11 @@ interface Props {
   phone: string
   phonePaswordMd5: string
   phoneLoginRember: boolean
+  nickName: string
 }
 
 interface Actions {
   update: (obj: Partial<Props>) => void
-
 }
 
 const initialState = {
@@ -22,8 +22,8 @@ const initialState = {
   phone: "",
   phonePaswordMd5: "",
   phoneLoginRember: false,
+  nickName: "",
 }
-
 
 export const useLoginStore = create<Props & Actions>()(
   devtools(
@@ -42,3 +42,5 @@ export const useLoginStore = create<Props & Actions>()(
     }
   )
 )
+
+export const useNickName = () => useLoginStore((state) => state.nickName)

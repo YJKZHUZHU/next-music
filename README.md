@@ -23,6 +23,7 @@
 ### 样式 tailwind
 
 1. [https://www.tailwindcss.cn](https://www.tailwindcss.cn)
+2. [动画](https://github.com/jamiebuilds/tailwindcss-animate)
 
 ### redux平替 zustand
 1. [官方文档](https://github.com/pmndrs/zustand?tab=readme-ov-file)

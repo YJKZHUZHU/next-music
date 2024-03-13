@@ -1,4 +1,4 @@
-import { IAccountInfo, IUserInfo } from "@/store/user"
+import { AccountData, IAccountInfo, IUserInfo, IVipInfo, ProfileData } from "@/store/user"
 import { service, IResp } from "./index"
 
 enum FetchEnum {
@@ -9,6 +9,8 @@ enum FetchEnum {
   accountDetail = "/user/account",
   anonimous = "/register/anonimous",
   logout = "/logout",
+  vipGrowthpoint = "/vip/growthpoint",
+  userLevel = "/user/level",
 }
 
 interface IloginByEmailParams {
@@ -33,8 +35,16 @@ export const loginByPhone = (data: IloginByPhoneParams) => {
   return service.post(FetchEnum.loginByPhone, data)
 }
 
+interface ILoginRes {
+  data: {
+    code: number // 状态码
+    account: AccountData // 账户信息
+    profile: ProfileData // 用户资料信息
+  }
+}
+
 export const loginStatus = () => {
-  return service.post<unknown, IResp<any>>(FetchEnum.loginStatus)
+  return service.post<unknown, IResp<ILoginRes>>(FetchEnum.loginStatus)
 }
 
 export const userDetail = (data: { uid: string }) => {
@@ -58,4 +68,12 @@ export const anonimous = () => {
 /** 退出登录 */
 export const logout = () => {
   return service.post<unknown, IResp<any>>(FetchEnum.logout)
+}
+
+export const vipGrowthpoint = () => {
+  return service.post<unknown, IResp<IVipInfo>>(FetchEnum.vipGrowthpoint)
+}
+
+export const userLevel = () => {
+  return service.post<unknown, IResp<IVipInfo>>(FetchEnum.userLevel)
 }
