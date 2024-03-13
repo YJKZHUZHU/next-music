@@ -36,11 +36,9 @@ export const loginByPhone = (data: IloginByPhoneParams) => {
 }
 
 interface ILoginRes {
-  data: {
-    code: number // 状态码
-    account: AccountData // 账户信息
-    profile: ProfileData // 用户资料信息
-  }
+  code: number // 状态码
+  account: AccountData // 账户信息
+  profile: ProfileData // 用户资料信息
 }
 
 export const loginStatus = () => {
