@@ -269,7 +269,7 @@ export const useLoading = () => useHomePageStore((state) => state.loading)
 export const useBanner = () =>
   useHomePageStore(
     (state) =>
-      state.pageList?.find((d) => d.blockCode === "HOMEPAGE_BANNER")?.extInfo?.banners || []
+      (state.pageList?.find((d) => d.blockCode === "HOMEPAGE_BANNER")?.extInfo?.banners || []) as unknown as IBannerInfo[]
   )
 
 // 首页导航位
