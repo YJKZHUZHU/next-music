@@ -144,6 +144,7 @@ export interface IBannerInfo {
 interface SubTitle {
   canShowTitleLogo: boolean // 是否显示标题标志
   title: string
+  titleType: string
 }
 
 /**
@@ -269,7 +270,8 @@ export const useLoading = () => useHomePageStore((state) => state.loading)
 export const useBanner = () =>
   useHomePageStore(
     (state) =>
-      (state.pageList?.find((d) => d.blockCode === "HOMEPAGE_BANNER")?.extInfo?.banners || []) as unknown as IBannerInfo[]
+      (state.pageList?.find((d) => d.blockCode === "HOMEPAGE_BANNER")?.extInfo?.banners ||
+        []) as unknown as IBannerInfo[]
   )
 
 // 首页导航位
@@ -288,7 +290,7 @@ export const useRecommendedPlay = () =>
     const title = target?.uiElement?.subTitle.title
     return {
       list: list as unknown as IRecommendedPlay[],
-      title: title,
+      title: title || '推荐歌单',
     }
   })
 
