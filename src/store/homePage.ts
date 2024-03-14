@@ -1,4 +1,5 @@
 import { Block } from "@/api/home"
+import { trace } from "console"
 import { create } from "zustand"
 import { persist, createJSONStorage, devtools } from "zustand/middleware"
 
@@ -140,6 +141,11 @@ export interface IBannerInfo {
   bannerBizType: string // 横幅业务类型
 }
 
+interface SubTitle {
+  canShowTitleLogo: boolean // 是否显示标题标志
+  title: string
+}
+
 /**
  * 资源元素 UI 元素
  */
@@ -148,6 +154,7 @@ interface UiElement {
     title: string // 主标题
     canShowTitleLogo: boolean // 是否显示标题标志
   }
+  subTitle: SubTitle // 副标题
   image: {
     action: string // 动作
     title: string // 标题
@@ -156,18 +163,19 @@ interface UiElement {
     purePicture: boolean // 是否纯图片
   }
   rcmdShowType: string // 推荐展示类型
+  labelTexts: string[] // 标签文本数组
 }
 
 /**
  * 资源
  */
-interface Resource {
+export interface Resource {
   uiElement: UiElement // UI 元素
   resourceType: string // 资源类型
   resourceState: null // 资源状态
   resourceId: string // 资源 ID
   resourceUrl: null // 资源 URL
-  resourceExtInfo: null // 资源额外信息
+  resourceExtInfo: any // 资源额外信息
   action: string // 动作
   actionType: string // 动作类型
   valid: boolean // 是否有效
@@ -194,8 +202,44 @@ export interface ICreatives {
   resources: Resource[] // 资源数组
   position: number // 位置
 }
+interface ResourceExtInfo {
+  playCount: number // 播放次数
+  highQuality: boolean // 是否高质量
+  hasListened: boolean // 是否已听
+  specialType: number // 特殊类型
+}
+export interface IRecommendedItem {
+  uiElement: UiElement // UI 元素
+  resourceType: string // 资源类型
+  resourceState: any // 资源状态
+  resourceId: string // 资源 ID
+  resourceUrl: any // 资源 URL
+  resourceExtInfo: ResourceExtInfo // 资源扩展信息
+  action: string // 动作
+  actionType: string // 动作类型
+  valid: boolean // 是否有效
+  alg: string // 算法
+  logInfo: string // 日志信息
+  ctrp: any // CTRP
+  likedCount: any // 点赞数
+  replyCount: any // 回复数
+  resourceContentList: any // 资源内容列表
+  position: any // 位置
+  playParams: any // 播放参数
+}
+export interface IRecommendedPlay {
+  creativeType: string // 创意类型
+  creativeId: string // 创意 ID
+  action: string // 动作
+  actionType: string // 动作类型
+  uiElement: UiElement // UI 元素
+  resources: IRecommendedItem[] // 资源数组
+  alg: string // 算法
+  logInfo: string // 日志信息
+  position: number // 位置
+}
 
-const initialState = {
+const initialState: Props = {
   pageList: [],
   loading: false,
 }
@@ -243,7 +287,20 @@ export const useRecommendedPlay = () =>
     const list = target?.creatives || []
     const title = target?.uiElement?.subTitle.title
     return {
-      list,
+      list: list as unknown as IRecommendedPlay[],
       title: title,
     }
   })
+
+// 相似推荐
+export const useSimilarityRecommended = () => {
+  const target = useHomePageStore((state) =>
+    state.pageList.find((item) => item.blockCode === "HOMEPAGE_BLOCK_STYLE_RCMD")
+  )
+  return {
+    list: target?.creatives || [],
+    resourceIdList: target?.resourceIdList || [],
+    title: target?.uiElement?.subTitle?.title,
+    button: target?.uiElement?.button,
+  }
+}

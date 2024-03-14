@@ -1,4 +1,4 @@
-import { IBannerInfo, ICreatives } from "@/store/homePage"
+import { IBannerInfo, ICreatives, IRecommendedPlay } from "@/store/homePage"
 import { IResp, service } from "./index"
 
 enum EnumFeatch {
@@ -335,7 +335,7 @@ export interface Block {
   showType: string // 展示类型
   dislikeShowType: number // 不喜欢的展示类型
   extInfo: {
-    banners?: IBannerInfo[]
+    banners?: (IBannerInfo | IRecommendedPlay)[]
   } // 扩展信息
   creatives: ICreatives[]
   canClose: boolean // 是否可以关闭
@@ -357,6 +357,7 @@ export interface Block {
     }
     rcmdShowType: string
   }
+  resourceIdList: string[]
 }
 
 /**

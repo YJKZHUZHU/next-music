@@ -1,23 +1,29 @@
 "use client"
-import { Block, homepage } from "@/api/home"
+import { homepage } from "@/api/home"
 import { PullToRefresh } from "antd-mobile"
-import { NoSSR } from "@/components"
 import { useHomePageStore } from "@/store/homePage"
-import { HomeBanner, RecommendedPlaylist, Top, Resources } from "./components"
-import { useEffect, useState } from "react"
+import {
+  HomeBanner,
+  RecommendedPlaylist,
+  Top,
+  Resources,
+  SimilarityRecommended,
+} from "./components"
+import { useEffect, useRef } from "react"
 
 export default function Home() {
-  // const [pageList, setPageList] = useState<Block[]>([])
   const [setPageList, setLoading] = useHomePageStore((state) => [
     state.setPageList,
     state.setLoading,
   ])
+  const cursor = useRef("")
 
-  const getData = async () => {
+  const getData = async (data: { refresh: boolean; cursor?: string }) => {
     try {
       setLoading(true)
-      const res = await homepage({ refresh: true })
-      console.log("res--", res)
+      const res = await homepage(data)
+      console.log("app首页数据", res)
+      cursor.current = res.data.cursor
       setPageList(res.data.blocks)
       setLoading(false)
     } catch (error) {
@@ -25,17 +31,13 @@ export default function Home() {
       console.log("error", error)
     }
   }
-  const onRefresh = async () => {
-    try {
-    } catch (error) {}
-  }
 
   useEffect(() => {
-    getData()
+    getData({ refresh: false })
   }, [])
   return (
-    <PullToRefresh onRefresh={onRefresh}>
-      <div className="flex flex-col  py-16 gap-32">
+    <PullToRefresh headHeight={50} onRefresh={() => getData({ refresh: true })}>
+      <div className="flex flex-col  py-16 gap-24">
         <Top />
 
         <div className="px-[24px]">
@@ -45,12 +47,12 @@ export default function Home() {
           <Resources />
         </div>
 
-        <div className=" flex flex-col gap-[24px]  ">
-          <div className=" flex justify-between items-center gap-[12px] px-[24px]">
-            <span className=" text-[18px] text-[#121212] leading-[24px] font-[500]">推荐歌单</span>
-            <span className=" text-[14px] text-[#FB233B] leading-[20px]">查看全部</span>
-          </div>
+        <div className=" flex flex-col gap-[24px]">
           <RecommendedPlaylist />
+        </div>
+
+        <div className="flex flex-col gap-[24px]">
+          <SimilarityRecommended onRefresh={() => getData({ refresh: true })} />
         </div>
       </div>
     </PullToRefresh>
