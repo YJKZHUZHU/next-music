@@ -1,9 +1,8 @@
 "use client"
-import React, { FC, useCallback, useMemo } from "react"
-import { useSimilarityRecommended, useLoading } from "@/store/homePage"
-import { Image as ClientImage } from "antd-mobile"
+import React, { FC, useCallback } from "react"
+import { useSimilarityRecommended, useSimilarityRecommendedLoading } from "@/store/homePage"
 import Image from "next/image"
-import { Triangle } from "@/components"
+import { Triangle, SkeletonImage } from "@/components"
 import classNames from "classnames"
 import Skeleton from "react-loading-skeleton"
 
@@ -39,8 +38,10 @@ const Empty = () => {
 
 const SimilarityRecommended: FC<Props> = (props) => {
   const { onRefresh } = props
-  const loading = useLoading()
+  const loading = useSimilarityRecommendedLoading()
   const { list, title, button } = useSimilarityRecommended()
+
+  console.log("loading", loading)
 
   const renderList = useCallback(() => {
     return (
@@ -51,15 +52,10 @@ const SimilarityRecommended: FC<Props> = (props) => {
               {item.resources.map((d) => {
                 return (
                   <div className="w-320 flex gap-8" key={d.resourceId}>
-                    <ClientImage
-                      fallback={<Skeleton height={80} />}
-                      placeholder={<Skeleton height={80} />}
-                      className=" rounded-[8px]"
-                      src={d.uiElement?.image?.imageUrl}
-                      width={80}
-                      height={80}
-                      alt=""
+                    <SkeletonImage
+                      imageProps={{ src: d.uiElement?.image?.imageUrl, className: "rounded-[8px]" }}
                     />
+
                     <div className="flex-1 flex flex-col gap-4 mr-8">
                       <span className=" line-clamp-1 font-[600] text-[#343648]">
                         {d?.uiElement?.mainTitle?.title}
@@ -99,15 +95,14 @@ const SimilarityRecommended: FC<Props> = (props) => {
       <>
         <div onClick={onRefresh} className="flex items-center gap-[4px]">
           <Image
-            className={classNames({ [" animate-spin"]: loading })}
+            priority
+            className={classNames({ ["animate-spin"]: loading })}
             src="/home/reload.png"
             width={18}
             height={18}
             alt=""
           />
-          <span className="text-[18px] text-[#121212] leading-[16px] font-[500] line-clamp-1">
-            {title}
-          </span>
+          <span className="text-[18px] text-[#121212] font-[500] line-clamp-1">{title}</span>
         </div>
         <div className="flex-1 ml-8">
           <div className="flex items-center gap-2 bg-[#E6E8EC] rounded-[24px] px-12 py-2 w-[max-content] ">
@@ -117,7 +112,7 @@ const SimilarityRecommended: FC<Props> = (props) => {
         </div>
       </>
     )
-  }, [title, button])
+  }, [title, button, loading])
 
   return (
     <>

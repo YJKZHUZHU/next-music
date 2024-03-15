@@ -1,4 +1,4 @@
-import { IBannerInfo, ICreatives, IRecommendedPlay } from "@/store/homePage"
+import { IBannerInfo, ICreatives, IRecommendedPlay, MlogDetail } from "@/store/homePage"
 import { IResp, service } from "./index"
 
 enum EnumFeatch {
@@ -334,9 +334,11 @@ export interface Block {
   blockCode: string // 数据块编码
   showType: string // 展示类型
   dislikeShowType: number // 不喜欢的展示类型
-  extInfo: {
-    banners?: (IBannerInfo | IRecommendedPlay)[]
-  } // 扩展信息
+  extInfo:
+    | {
+        banners?: (IBannerInfo | IRecommendedPlay)[]
+      }
+    | MlogDetail[] // 扩展信息
   creatives: ICreatives[]
   canClose: boolean // 是否可以关闭
   blockStyle: number // 数据块样式

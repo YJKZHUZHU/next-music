@@ -1,5 +1,6 @@
 "use client"
-import { Swiper, Image } from "antd-mobile"
+import { Swiper } from "antd-mobile"
+import Image from "next/image"
 import { useLoading, useBanner, useResources } from "@/store/homePage"
 import Skeleton from "react-loading-skeleton"
 import { FC, useMemo } from "react"
@@ -25,7 +26,7 @@ const HomeBanner: FC<Props> = (props) => {
             <div className=" py-[2px] px-[3px] absolute bottom-[6px] right-[8px] bg-[#ffffff] rounded-[6px] text-[#121212] text-[12px]">
               {item.typeTitle}
             </div>
-            <Image className="rounded-[10px]" lazy height="100%" src={item.pic!} alt="" />
+            <Image layout="fill" className="rounded-[10px]" src={item.pic!} alt="" />
           </div>
         </Swiper.Item>
       )

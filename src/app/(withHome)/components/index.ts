@@ -7,4 +7,8 @@ export { default as Top } from "./Top"
 
 export { default as Resources } from "./Resources"
 
-export {default as SimilarityRecommended} from './SimilarityRecommended'
+export { default as SimilarityRecommended } from "./SimilarityRecommended"
+
+export { default as Topic } from "./Topic"
+
+export { default as MusicVideo } from "./MusicVideo"

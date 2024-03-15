@@ -4,7 +4,6 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useRouter } from "next-nprogress-bar"
 import { useState } from "react"
-import styles from "./index.module.scss"
 
 enum EnumTab {
   home = "home",
@@ -76,13 +75,17 @@ function HomeTabBar() {
   ]
 
   const onChange = (key: string) => {
-    console.log("key--", key)
-    setActiveKey(key as EnumTab)
-    router.push(key === EnumTab.home ? "/" : key)
+    try {
+      console.log("key--", key)
+      setActiveKey(key as EnumTab)
+      router.push(key === EnumTab.home ? "/" : `/${key}`)
+    } catch (error) {
+      console.log("error", error)
+    }
   }
   return (
     <TabBar
-      className={`h-[100%] ${styles.tabBar} border-[#F5F5F5] border-t-[1px] border-solid`}
+      className="border-[#F5F5F5] border-t-[1px] border-t-solid box-border"
       activeKey={activeKey}
       safeArea
       onChange={onChange}>

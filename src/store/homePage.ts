@@ -1,16 +1,41 @@
 import { Block } from "@/api/home"
-import { trace } from "console"
 import { create } from "zustand"
 import { persist, createJSONStorage, devtools } from "zustand/middleware"
+import { ProfileData } from "./user"
+
+export enum EnumBlockCode {
+  "HOMEPAGE_BANNER" = "HOMEPAGE_BANNER",
+  "HOMEPAGE_BLOCK_OLD_DRAGON_BALL" = "HOMEPAGE_BLOCK_OLD_DRAGON_BALL",
+  "HOMEPAGE_BLOCK_PLAYLIST_RCMD" = "HOMEPAGE_BLOCK_PLAYLIST_RCMD",
+  "HOMEPAGE_BLOCK_STYLE_RCMD" = "HOMEPAGE_BLOCK_STYLE_RCMD",
+  "HOMEPAGE_BLOCK_HOT_TOPIC" = "HOMEPAGE_BLOCK_HOT_TOPIC",
+  "HOMEPAGE_MUSIC_MLOG" = "HOMEPAGE_MUSIC_MLOG",
+  "HOMEPAGE_BLOCK_MGC_PLAYLIST" = "HOMEPAGE_BLOCK_MGC_PLAYLIST",
+  "HOMEPAGE_VOICELIST_RCMD" = "HOMEPAGE_VOICELIST_RCMD",
+  "HOMEPAGE_MUSIC_PODCAST_RCMD_BLOCK" = "HOMEPAGE_MUSIC_PODCAST_RCMD_BLOCK",
+  "HOMEPAGE_BLOCK_OFFICIAL_PLAYLIST" = "HOMEPAGE_BLOCK_OFFICIAL_PLAYLIST",
+  "HOMEPAGE_BLOCK_YUNCUN_PRODUCED" = "HOMEPAGE_BLOCK_YUNCUN_PRODUCED",
+  "HOMEPAGE_BLOCK_NEW_ALBUM_NEW_SONG" = "HOMEPAGE_BLOCK_NEW_ALBUM_NEW_SONG",
+  "HOMEPAGE_BLOCK_TOPLIST" = "HOMEPAGE_BLOCK_TOPLIST",
+  "HOMEPAGE_BLOCK_NEW_HOT_COMMENT" = "HOMEPAGE_BLOCK_NEW_HOT_COMMENT",
+  "HOMEPAGE_MUSIC_CALENDAR" = "HOMEPAGE_MUSIC_CALENDAR",
+  "HOMEPAGE_PODCAST24" = "HOMEPAGE_PODCAST24",
+  "HOMEPAGE_BLOCK_VIDEO_PLAYLIST" = "HOMEPAGE_BLOCK_VIDEO_PLAYLIST",
+  "HOMEPAGE_WHOLENET_HOT_PODCAST" = "HOMEPAGE_WHOLENET_HOT_PODCAST",
+  "HOMEPAGE_VOICEBOOK_RCMD" = "HOMEPAGE_VOICEBOOK_RCMD",
+}
 
 interface Props {
   pageList: Block[]
   loading: boolean
+  blockCodeLoading: Record<string, boolean>
 }
 
 interface Actions {
+  setBlockCodeLoading: (code: string, loading: boolean) => void
   setPageList: (pageList: Block[]) => void
   setLoading: (loading: boolean) => void
+  updatePageList: (pageList: Block) => void
 }
 
 /**
@@ -154,6 +179,7 @@ interface UiElement {
   mainTitle: {
     title: string // 主标题
     canShowTitleLogo: boolean // 是否显示标题标志
+    titleImgUrl: string
   }
   subTitle: SubTitle // 副标题
   image: {
@@ -208,6 +234,8 @@ interface ResourceExtInfo {
   highQuality: boolean // 是否高质量
   hasListened: boolean // 是否已听
   specialType: number // 特殊类型
+  eventMsg: string
+  user: ProfileData
 }
 export interface IRecommendedItem {
   uiElement: UiElement // UI 元素
@@ -243,15 +271,35 @@ export interface IRecommendedPlay {
 const initialState: Props = {
   pageList: [],
   loading: false,
+  blockCodeLoading: {},
 }
 
 export const useHomePageStore = create<Props & Actions>()(
   devtools(
     persist(
-      (set) => ({
+      (set, get) => ({
         ...initialState,
         setPageList: (pageList) => set({ pageList }, false, "更新首页信息"),
         setLoading: (loading) => set({ loading }, false, "更新loading状态"),
+        setBlockCodeLoading: (blockCode, loading) => {
+          const target = get().blockCodeLoading
+
+          set(
+            { blockCodeLoading: { ...target, [blockCode]: loading } },
+            false,
+            `更新${blockCode}loading状态`
+          )
+        },
+        updatePageList: (pageInfo) => {
+          const source = get().pageList
+          const target = source.map((item) => {
+            if (item.blockCode === pageInfo.blockCode) {
+              return pageInfo
+            }
+            return item
+          })
+          set({ pageList: target }, false, `更新${pageInfo.blockCode}数据`)
+        },
       }),
       {
         name: "homePageStore",
@@ -267,42 +315,222 @@ export const useHomePageStore = create<Props & Actions>()(
 export const useLoading = () => useHomePageStore((state) => state.loading)
 
 // 首页轮播位
-export const useBanner = () =>
-  useHomePageStore(
-    (state) =>
-      (state.pageList?.find((d) => d.blockCode === "HOMEPAGE_BANNER")?.extInfo?.banners ||
-        []) as unknown as IBannerInfo[]
+export const useBanner = () => {
+  const target = useHomePageStore((state) =>
+    state.pageList?.find((d) => d.blockCode === EnumBlockCode.HOMEPAGE_BANNER)
   )
+  const result = target?.extInfo as { banners?: IBannerInfo[] }
+
+  return result?.banners || []
+}
 
 // 首页导航位
 export const useResources = () =>
   useHomePageStore(
     (state) =>
       state.pageList
-        ?.find((d) => d.blockCode === "HOMEPAGE_BLOCK_OLD_DRAGON_BALL")
+        ?.find((d) => d.blockCode === EnumBlockCode.HOMEPAGE_BLOCK_OLD_DRAGON_BALL)
         ?.creatives?.find((d) => d.creativeType === "DRAGON_BALL")?.resources || []
   )
 
-export const useRecommendedPlay = () =>
-  useHomePageStore((state) => {
-    const target = state.pageList?.find((d) => d.blockCode === "HOMEPAGE_BLOCK_PLAYLIST_RCMD")
-    const list = target?.creatives || []
-    const title = target?.uiElement?.subTitle.title
-    return {
-      list: list as unknown as IRecommendedPlay[],
-      title: title || '推荐歌单',
-    }
-  })
+export const useRecommendedPlay = () => {
+  const target = useHomePageStore((state) =>
+    state.pageList?.find((d) => d.blockCode === EnumBlockCode.HOMEPAGE_BLOCK_PLAYLIST_RCMD)
+  )
+  const list = target?.creatives || []
+  const title = target?.uiElement?.subTitle.title
+  return {
+    list: list as unknown as IRecommendedPlay[],
+    title: title || "推荐歌单",
+  }
+}
 
 // 相似推荐
 export const useSimilarityRecommended = () => {
   const target = useHomePageStore((state) =>
-    state.pageList.find((item) => item.blockCode === "HOMEPAGE_BLOCK_STYLE_RCMD")
+    state.pageList.find((item) => item.blockCode === EnumBlockCode.HOMEPAGE_BLOCK_STYLE_RCMD)
   )
   return {
     list: target?.creatives || [],
     resourceIdList: target?.resourceIdList || [],
     title: target?.uiElement?.subTitle?.title,
     button: target?.uiElement?.button,
+  }
+}
+
+export const useSimilarityRecommendedLoading = () =>
+  useHomePageStore(
+    (state) => state.blockCodeLoading[EnumBlockCode.HOMEPAGE_BLOCK_STYLE_RCMD] || false
+  )
+
+// 热门话题
+export const useTopic = () => {
+  const target = useHomePageStore((state) =>
+    state.pageList.find((item) => item.blockCode === EnumBlockCode.HOMEPAGE_BLOCK_HOT_TOPIC)
+  )
+  const list = target?.creatives || []
+  const title = target?.uiElement?.subTitle.title
+  return {
+    list: list as unknown as IRecommendedPlay[],
+    title: title || "热门话题",
+  }
+}
+
+export interface MlogDetail {
+  id: string
+  type: number
+  mlogBaseDataType: number
+  position: null
+  resource: {
+    mlogBaseData: {
+      id: string
+      type: number
+      originalTitle: string
+      text: string
+      desc: string
+      interveneText: string
+      pubTime: number
+      coverUrl: string
+      coverDetail: {
+        verticalCoverImage: {
+          width: null
+          height: null
+          imageUrl: null
+        }
+        horizontalCoverImage: {
+          width: null
+          height: null
+          imageUrl: null
+        }
+      }
+      coverHeight: number
+      greatCover: boolean
+      coverWidth: number
+      coverColor: number
+      coverPicKey: string
+      coverDynamicUrl: null
+      audio: null
+      threadId: string
+      duration: number
+      video: {
+        videoKey: string
+        duration: number
+        coverUrl: string
+        frameUrl: string
+        frameImage: {
+          picKey: string
+          imageUrl: string
+          width: number
+          height: number
+        }
+        width: number
+        height: number
+        urlInfo: {
+          id: string
+          url: null
+          size: number
+          r: number
+          validityTime: number
+          resolution: null
+        }
+        urlInfos: [
+          {
+            id: string
+            url: null
+            size: number
+            r: number
+            validityTime: number
+            resolution: number
+          }
+        ]
+        rcmdUrlInfo: {
+          id: string
+          url: null
+          size: number
+          r: number
+          validityTime: number
+          resolution: null
+        }
+        playCount: null
+        coverDetail: {
+          verticalCoverImage: null
+          horizontalCoverImage: null
+        }
+      }
+      videos: null
+      graphic: null
+    }
+    mlogExtVO: {
+      likedCount: number
+      commentCount: number
+      playCount: number
+      song: {
+        id: number
+        name: string
+        coverUrl: string
+        duration: number
+        artists: [
+          {
+            artistId: number
+            artistName: string
+          }
+        ]
+        privilege: null
+        albumName: string
+        startTime: null
+        endTime: null
+      }
+      algSong: null
+      videoStartPlayTime: number
+      canCollect: boolean
+      collectReason: null
+      artistName: null
+      rcmdInfo: null
+      strongPushMark: null
+      strongPushIcon: null
+      specialTag: string
+      channelTag: null
+      artists: []
+    }
+    userProfile: {
+      userId: number
+      nickname: string
+      avatarUrl: string
+      followed: boolean
+      userType: number
+      isAnchor: boolean
+      avatarDetail: {
+        userType: null
+        identityLevel: null
+        identityIconUrl: null
+      }
+    }
+    relatedPubUsers: null
+    status: number
+    source: number
+    shareUrl: string
+    mlogPlaylists: null
+  }
+  alg: string
+  logInfo: string
+  reason: string
+  matchField: number
+  matchFieldContent: null
+  sameCity: boolean
+}
+
+export const useMisicVideoLoading = () =>
+  useHomePageStore((state) => state.blockCodeLoading[EnumBlockCode.HOMEPAGE_MUSIC_MLOG] || false)
+
+export const useMisicVideo = () => {
+  const target = useHomePageStore((state) =>
+    state.pageList.find((item) => item.blockCode === EnumBlockCode.HOMEPAGE_MUSIC_MLOG)
+  )
+
+  const list = (target?.extInfo || []) as MlogDetail[]
+  const title = target?.uiElement?.subTitle.title
+  return {
+    list,
+    title: title || "精选音乐视频",
   }
 }

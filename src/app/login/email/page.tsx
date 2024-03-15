@@ -1,18 +1,15 @@
 "use client"
-import { NavBar, Toast, Input, SearchBar, Checkbox, Button, NoticeBar } from "antd-mobile"
+import { Toast, Input, Checkbox, Button } from "antd-mobile"
 import React, { useEffect, useMemo, useState } from "react"
-import { useRouter } from "next-nprogress-bar"
 import Image from "next/image"
 import md5 from "md5"
-import { loginByEmail, loginByPhone } from "@/api/user"
+import { loginByEmail } from "@/api/user"
 import { useLoginStore } from "@/store/login"
-import { useUserStore } from "@/store/user"
-import Cookie from "js-cookie"
 import { validateEmail } from "@/utils/validateEmail"
 
 import { Header } from "../components"
 import styles from "./index.module.scss"
-import { EnumLocalStorage, setItem, setLoginCache } from "@/utils/cache"
+import { setLoginCache } from "@/utils/cache"
 
 function Email() {
   const [update, storeEmail, storeEmaliPasword, storeIsRember] = useLoginStore((state) => [
@@ -21,9 +18,6 @@ function Email() {
     state.emaliPassword,
     state.emailLoginRember,
   ])
-  const router = useRouter()
-  // 18470186610@163.com
-  // Yjk@18470186610
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
@@ -35,7 +29,6 @@ function Email() {
   })
   const [isRember, setIsRember] = useState(false)
 
-  console.log("storeEmail", storeEmail, storeIsRember)
 
   const validateForm = () => {
     const info = Object.create(null)
@@ -70,8 +63,6 @@ function Email() {
       console.log("res--", res)
       setLoginCache(false, true, res.data.profile.userId, res.data.cookie)
       setLoading(false)
-      // setItem(EnumLocalStorage.cookie,res.data)
-      // setLogin(true)
       update({
         email: isRember ? email : "",
         emaliPassword: isRember ? password : "",
@@ -111,7 +102,7 @@ function Email() {
 
   return (
     <div className="flex flex-col">
-      <NavBar onBack={router.back}>邮箱登录</NavBar>
+      {/* <NavBar onBack={router.back}>邮箱登录</NavBar> */}
       <Header active={active} />
 
       <div className="px-[24px]">
