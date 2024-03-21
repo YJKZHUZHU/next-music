@@ -1,64 +1,62 @@
 "use client"
 import { useResources } from "@/store/homePage"
 import React, { useMemo } from "react"
-import { Image } from "antd-mobile"
 import dayjs from "dayjs"
 import Skeleton from "react-loading-skeleton"
-const skeletonArr = [...new Array(5).keys()]
+import { rgbDataURL } from "@/utils/rgbDataURL"
+import { NextImage } from '@/components'
 
-const Empty = () => {
-  return (
-    <>
-      {skeletonArr.map((d) => {
-        return (
-          <div key={d} className="w-65  flex flex-col gap-8">
-            <Skeleton className="w-65 h-65" />
-            <Skeleton className="h-[14px]" count={1} />
-          </div>
-        )
-      })}
-    </>
-  )
-}
+const skeletonArr = [...new Array(10).keys()]
+
 
 function Resources() {
   const resources = useResources()
-  console.log("resources", resources)
   const list = useMemo(() => {
+    if (resources.length === 0) {
+      return skeletonArr.map(d => {
+        return {
+          image: rgbDataURL(235, 235, 235),
+          showtoday: false,
+          title: '',
+          resourceId: d
+        }
+      })
+    }
     return resources.map((item) => {
       return {
-        image: item?.uiElement.image?.imageUrl2 || "",
+        image: item?.uiElement.image?.imageUrl2 || "/",
         title: item?.uiElement?.mainTitle?.title,
         showtoday: item?.action === "orpheus://songrcmd",
         resourceId: item?.resourceId,
       }
     })
   }, [resources])
-  console.log("=--list=", list)
   return (
-    <div className=" flex gap-8 scrollbar-hide overflow-x-scroll">
-      {list.length === 0 ? (
-        <Empty />
-      ) : (
+    <div className="flex gap-8 scrollbar-hide overflow-x-scroll">
+      {
         list?.map((item) => {
           return (
-            <div className=" flex flex-col items-center" key={item.resourceId}>
+            <div className="flex flex-col items-center" key={item.resourceId}>
               {item.showtoday ? (
-                <div className=" relative">
-                  <span className=" absolute text-16 text-white top-[25px] left-[23px] font-[600]">
+                <div className="relative w-[65px] h-[65px] rounded-[8px]">
+                  <span className="absolute text-16 text-white top-[25px] left-[23px] font-[600] z-1">
                     {dayjs().date()}
                   </span>
-                  <Image lazy src={item.image} width={65} height={65} alt="" />
+                  <NextImage className="rounded-[8px]" src={item.image} alt="" />
                 </div>
               ) : (
-                <Image lazy src={item.image} width={65} height={65} alt="" />
-              )}
+                <div className="relative w-[65px] h-[65px]">
+                  <NextImage className="rounded-[8px]" src={item.image} alt="" />
+                </div>
 
-              <span className="text-14 text-[#61646F]">{item.title}</span>
+              )}
+              {item.title ? <span className="text-14 text-[#61646F]">{item.title}</span> : <Skeleton className="h-[14px] w-65" count={1} />}
+
             </div>
           )
         })
-      )}
+      }
+
     </div>
   )
 }

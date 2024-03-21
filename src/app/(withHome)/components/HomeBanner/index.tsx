@@ -1,48 +1,53 @@
 "use client"
 import { Swiper } from "antd-mobile"
-import Image from "next/image"
-import { useLoading, useBanner, useResources } from "@/store/homePage"
-import Skeleton from "react-loading-skeleton"
+import { useBanner, IBannerInfo } from "@/store/homePage"
 import { FC, useMemo } from "react"
+import { rgbDataURL } from "@/utils/rgbDataURL"
+import { NextImage } from '@/components'
 
 interface Props {
   className?: string
 }
+
+
 const HomeBanner: FC<Props> = (props) => {
   const { className } = props
 
-  const loading = useLoading()
+
   const bannerList = useBanner()
-  const resources = useResources()
-  console.log("resources", resources)
+
 
   const items = useMemo(() => {
+
     // 去除广告
     const target = bannerList.filter((item) => !!!item.adid)
-    return target.map((item) => {
+    const list = (target.length === 0 ? [{ pic: rgbDataURL(235, 235, 235) }] : target) as IBannerInfo[]
+
+
+    return list.map((item) => {
+      const src = `${item.pic!}`
       return (
-        <Swiper.Item key={item.url}>
+        <Swiper.Item key={src}>
           <div className="h-[160px] rounded-[10px] relative">
-            <div className=" py-[2px] px-[3px] absolute bottom-[6px] right-[8px] bg-[#ffffff] rounded-[6px] text-[#121212] text-[12px]">
-              {item.typeTitle}
-            </div>
-            <Image layout="fill" className="rounded-[10px]" src={item.pic!} alt="" />
+            {
+              item.typeTitle && (<div className=" py-[2px] px-[3px] absolute bottom-[6px] right-[8px] bg-[#ffffff] rounded-[6px] text-[#121212] text-[12px]">
+                {item.typeTitle}
+              </div>)
+            }
+            <NextImage className="rounded-[10px]" src={src} alt="" />
+
           </div>
         </Swiper.Item>
       )
     })
   }, [bannerList])
 
+
+
   return (
-    <>
-      {bannerList.length === 0 ? (
-        <Skeleton className="h-[160px]" />
-      ) : (
-        <Swiper className={className} loop autoplay={false}>
-          {items}
-        </Swiper>
-      )}
-    </>
+    <Swiper className={className} loop autoplay={false}>
+      {items}
+    </Swiper>
   )
 }
 

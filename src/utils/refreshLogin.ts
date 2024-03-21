@@ -1,9 +1,10 @@
 import { loginStatus } from "@/api/user"
-import { setLoginCache } from "./cache"
+import { setLoginCache, getItem, EnumLocalStorage } from "./cache"
 
 // 刷新登录状态
 export const refreshLogin = async () => {
   try {
+    
     const res = await loginStatus()
     if (!res.data.profile && !res.data.account) return
     // 是否是游客
@@ -13,5 +14,6 @@ export const refreshLogin = async () => {
     setLoginCache(isVisitor, !isVisitor, userId)
   } catch (error) {
     console.log("error", error)
+    throw error
   }
 }

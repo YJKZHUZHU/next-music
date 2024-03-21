@@ -22,7 +22,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  console.log("rest")
+  
+  setTimeout(()=>{
+    console.log("rest",'执行')
+  },2000)
   dynamic(() => import("amfe-flexible"), {
     ssr: false,
   })

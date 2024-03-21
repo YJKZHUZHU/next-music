@@ -38,6 +38,7 @@ export default function Home() {
         getData({ refresh: false, cursor: cursor.current })
         return
       }
+      totalData.current = [...totalData.current, ...res.data.blocks]
 
       setPageList(totalData.current)
 
@@ -74,6 +75,7 @@ export default function Home() {
   useEffect(() => {
     getData({
       refresh: false,
+      // cursor: ''
     })
   }, [])
   return (

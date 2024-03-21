@@ -3,6 +3,7 @@ import axios, { AxiosInstance } from "axios"
 import qs from "qs"
 import Cookies from "js-cookie"
 import { redirect } from "next/navigation"
+import { EnumLocalStorage, getItem } from "@/utils/cache"
 
 export interface ErrorRes extends Error {
   url?: string
@@ -93,17 +94,46 @@ function createService() {
 }
 
 export function createRequestFunction(service: AxiosInstance) {
-  service.defaults.baseURL = "https://api.douya-music.top"
+  // service.defaults.baseURL = "https://api.douya-music.top"
+  service.defaults.baseURL = "/api"
 
   service.defaults.timeout = 60 * 1000
+
+  service.interceptors.request.use(
+    (config) => {
+
+
+      console.log('config', config.data)
+      let data = Object.create(null)
+      data = config.data ? config.data : {}
+
+      const cookie = getItem(EnumLocalStorage.cookie)
+
+      if (cookie) {
+        data.cookie = cookie
+      }
+      config.data = data
+
+      console.log('config11', config.data)
+
+      return config
+    },
+    // 发送失败
+    (error) => Promise.reject(error)
+  )
 
   return service
 }
 
 // 不缓存
 export function createNoCacheRequestFunction(service: AxiosInstance) {
+  service.defaults.baseURL = "/api"
+
+  service.defaults.timeout = 60 * 1000
+
   service.interceptors.request.use(
     (config) => {
+
       const [url, queryString] = config.url?.split("?") || []
       let obj = Object.create(null)
       obj.timestamp = Date.now()
@@ -113,16 +143,29 @@ export function createNoCacheRequestFunction(service: AxiosInstance) {
           ...qs.parse(queryString),
         }
       }
+      console.log('config', config.data)
+      let data = Object.create(null)
+      data = config.data ? config.data : {}
+
+      const cookie = getItem(EnumLocalStorage.cookie)
+
+      if (cookie) {
+        data.cookie = cookie
+      }
+      config.data = data
+
+
+
       const query = qs.stringify(obj)
       config.url = `${url}?${query}`
+
+      console.log('config11', config.data)
+
       return config
     },
     // 发送失败
     (error) => Promise.reject(error)
   )
-  service.defaults.baseURL = "https://api.douya-music.top"
-
-  service.defaults.timeout = 60 * 1000
 
   return service
 }

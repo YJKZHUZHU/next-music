@@ -1,5 +1,5 @@
 import { AccountData, IAccountInfo, IUserInfo, IVipInfo, ProfileData } from "@/store/user"
-import { service, IResp } from "./index"
+import { service, IResp,cacheService } from "./index"
 
 enum FetchEnum {
   loginByEmail = "/login",
@@ -42,7 +42,7 @@ interface ILoginRes {
 }
 
 export const loginStatus = () => {
-  return service.post<unknown, IResp<ILoginRes>>(FetchEnum.loginStatus)
+  return cacheService.post<unknown, IResp<ILoginRes>>(FetchEnum.loginStatus)
 }
 
 export const userDetail = (data: { uid: string }) => {

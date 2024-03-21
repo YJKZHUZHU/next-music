@@ -32,7 +32,7 @@ function Template({ children }: { children: React.ReactNode }) {
       const res = await accountDetail()
       console.log("==账户信息==", res.data)
       res.success && setAccountInfo(res.data)
-      if (res.success && res.data.profile.nickname!) {
+      if (res.success && res.data.profile && res.data.profile?.nickname!) {
         update({ nickName: res.data.profile.nickname! })
       }
 
@@ -75,24 +75,31 @@ function Template({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const init = async () => {
-    await refreshLogin()
-    // 已登录
-    if (login() && pathName.startsWith("/login")) {
-      // location.href = "/"
-      router.replace("/")
-      return
-    }
-    // 未登录，默认注册游客模式，获取用户ID
-    !login() && !pathName.startsWith("/login") && (await onRegister())
-    // 已登录，设置账号和用户信息
-    if (login()) {
-      console.log("isVip1111", isVip)
-      const result = await getAccountInfo()
 
-      const userId = getItem(EnumLocalStorage.userId) as string
-      result && userId && (await getUserDetail(+userId))
+
+  const init = async () => {
+    try {
+      // !getItem(EnumLocalStorage.visitor) &&
+      await refreshLogin()
+
+      if (login()) {
+        if (pathName.startsWith("/login")) {
+          return router.replace("/")
+        }
+        // 已登录，设置账号和用户信息
+        const result = await getAccountInfo()
+
+        const userId = getItem(EnumLocalStorage.userId) as string
+        result && userId && (await getUserDetail(+userId))
+      }
+
+      // 未登录，默认注册游客模式，获取用户ID
+      // !pathName.startsWith("/login") && (await onRegister())
+
+    } catch (error) {
+      console.log('error', error)
     }
+
   }
 
   useEffect(() => {

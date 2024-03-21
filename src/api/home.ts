@@ -1,5 +1,5 @@
 import { IBannerInfo, ICreatives, IRecommendedPlay, MlogDetail } from "@/store/homePage"
-import { IResp, service } from "./index"
+import { IResp, service,cacheService } from "./index"
 
 enum EnumFeatch {
   banner = "/banner",
