@@ -5,13 +5,13 @@ import { FC } from "react"
 
 export const NextImage: FC<ImageProps> = (props = {
   src: rgbDataURL(235, 235, 235),
-  blurDataURL: rgbDataURL(235, 235, 235),
+  blurDataURL: rgbDataURL(235, 235, 1),
   placeholder: "blur",
   fill: true,
-  alt: ""
+  alt: "",
 }) => {
 
-  return <Image fill  {...props} />
+  return <Image   {...props} fill placeholder="blur" blurDataURL={rgbDataURL(235, 235, 235)} />
 }
 
 
