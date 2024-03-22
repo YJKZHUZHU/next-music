@@ -12,3 +12,5 @@ export { default as SimilarityRecommended } from "./SimilarityRecommended"
 export { default as Topic } from "./Topic"
 
 export { default as MusicVideo } from "./MusicVideo"
+
+export {default as RadarPlaylist} from './RadarPlaylist'

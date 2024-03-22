@@ -4,7 +4,6 @@ import { useBanner, IBannerInfo } from "@/store/homePage"
 import { FC, useMemo } from "react"
 import { rgbDataURL } from "@/utils/rgbDataURL"
 import { NextImage } from '@/components'
-import Image from "next/image"
 
 interface Props {
   className?: string

@@ -1,4 +1,3 @@
-"use client"
 import { useResources } from "@/store/homePage"
 import React, { useMemo } from "react"
 import dayjs from "dayjs"

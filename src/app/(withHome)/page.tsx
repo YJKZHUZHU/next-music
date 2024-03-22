@@ -11,6 +11,7 @@ import {
   SimilarityRecommended,
   Topic,
   MusicVideo,
+  RadarPlaylist
 } from "./components"
 
 export default function Home() {
@@ -102,9 +103,14 @@ export default function Home() {
         <div className="flex flex-col gap-[16px]">
           <Topic />
         </div>
+        {/* 雷达歌单 */}
+        {/* <div className="flex flex-col gap-[16px]">
+          <RadarPlaylist />
+        </div> */}
         <div className="flex flex-col gap-[16px]">
           <MusicVideo onRefresh={() => getOneData(true, EnumBlockCode.HOMEPAGE_MUSIC_MLOG)} />
         </div>
+
       </div>
     </PullToRefresh>
   )

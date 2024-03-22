@@ -1,8 +1,8 @@
-"use client"
 import React, { useCallback, useMemo } from "react"
 import Skeleton from "react-loading-skeleton"
 import { useTopic } from "@/store/homePage"
-import { Image } from "antd-mobile"
+import { NextImage } from "@/components"
+import { rgbDataURL } from "@/utils/rgbDataURL"
 
 const colorArr = [
   "linear-gradient(#6C948A, #81ABA1)",
@@ -17,6 +17,7 @@ function Topic() {
   const { list, title } = useTopic()
 
   const renderTop = useCallback(() => {
+    if (!title) return <Skeleton width={300} height={18} />
     return (
       <div className="flex items-center">
         <span className="text-[18px] text-[#121212] font-[500] line-clamp-1">{title}</span>
@@ -25,8 +26,31 @@ function Topic() {
   }, [title])
 
   const wrapList = useMemo(() => {
+    if (list.length === 0) {
+      return colorArr.map((_, index) => {
+        return {
+          resourceId: String(index),
+          titleImgUrl: rgbDataURL(235, 235, 235),
+          title: '',
+          subTitle: '',
+          nickname: '',
+          eventMsg: '',
+          imageUrl: rgbDataURL(235, 235, 235),
+        }
+      })
+    }
     const target = list.map((item) => item.resources)
-    return target.flat()
+    return target.flat().map(item => {
+      return {
+        resourceId: item?.resourceId,
+        titleImgUrl: item?.uiElement?.mainTitle?.titleImgUrl,
+        title: item?.uiElement?.mainTitle?.title,
+        subTitle: item?.uiElement?.subTitle?.title,
+        nickname: item?.resourceExtInfo?.user?.nickname,
+        eventMsg: item?.resourceExtInfo?.eventMsg,
+        imageUrl: item?.uiElement?.image?.imageUrl
+      }
+    })
   }, [list])
 
 
@@ -38,7 +62,7 @@ function Topic() {
   return (
     <>
       <div className="flex  items-center  px-[24px]">
-        {list.length === 0 ? <Skeleton width={300} height={18} /> : renderTop()}
+        {renderTop()}
       </div>
 
       <div className="scrollbar-hide overflow-x-scroll  px-[24px]">
@@ -50,32 +74,29 @@ function Topic() {
                 style={{ backgroundImage: getColor[index] }}
                 className="flex flex-col w-280 p-8 rounded-[16px] h-120">
                 <div className="flex items-center gap-2 mb-4">
-                  <Image
-                    src={item?.uiElement?.mainTitle?.titleImgUrl}
-                    width={16}
-                    height={16}
-                    lazy
-                    alt=""
-                  />
-                  <span className=" text-white font-[600] ">
-                    {item?.uiElement?.mainTitle?.title}
-                  </span>
+                  <div className="w-16 h-16 relative">
+                    <NextImage src={item?.titleImgUrl} alt="" />
+                  </div>
+                  {
+                    item?.title ? <span className=" text-white font-[600] ">
+                      {item?.title}
+                    </span> : <Skeleton height={16} width={200} />
+                  }
+
                 </div>
-                <span className="text-10 text-white">{item?.uiElement?.subTitle?.title}</span>
+                {item?.subTitle ? <span className="text-10 text-white">{item?.subTitle}</span> : <Skeleton height={10} width={50} />}
                 <div className="flex justify-between items-center gap-12">
-                  <div className=" line-clamp-2 flex-1 text-white">
-                    <span className="font-[600]">{item?.resourceExtInfo?.user?.nickname}:#</span>
-                    <span>{item?.resourceExtInfo?.eventMsg}</span>
+                  {
+                    item?.nickname ? <div className=" line-clamp-2 flex-1 text-white">
+                      <span className="font-[600]">{item?.nickname}:#</span>
+                      <span>{item?.eventMsg}</span>
+                    </div> : <Skeleton count={2} width={200} />
+                  }
+
+                  <div className="w-60 h-60 relative rounded-[8px]">
+                    <NextImage className="rounded-[8px]" src={item?.imageUrl} alt="" />
                   </div>
 
-                  <Image
-                    className=" rounded-[8px]"
-                    src={item?.uiElement?.image?.imageUrl}
-                    width={60}
-                    height={60}
-                    lazy
-                    alt=""
-                  />
                 </div>
               </div>
             )
