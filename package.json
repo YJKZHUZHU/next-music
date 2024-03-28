@@ -11,6 +11,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.2.2",
     "amfe-flexible": "^2.2.1",
     "antd-mobile": "^5.34.0",
     "axios": "^1.6.7",
