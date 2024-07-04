@@ -1,7 +1,14 @@
 import dynamic from "next/dynamic"
 import React, { FC } from "react"
 
-const NoSSR: FC<Record<string, any>> = (props) => <React.Fragment>{props.children}</React.Fragment>
+interface Props {
+  [key: string]: unknown
+}
+
+const NoSSR: FC<Props> = (props) => {
+  const { children } = props
+  return <>{children}</>
+}
 
 export default dynamic(() => Promise.resolve(NoSSR), {
   ssr: false,

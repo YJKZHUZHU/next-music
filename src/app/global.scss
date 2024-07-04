@@ -1,7 +1,13 @@
 @tailwind base;
+@layer base {
+  [hidden] {
+    display: none !important; // next-video 样式覆盖
+  }
+}
 @tailwind components;
 @tailwind utilities;
 @import url("react-loading-skeleton/dist/skeleton.css");
+@import url("xgplayer/dist/index.min.css");
 
 body {
   min-height: 100vh;

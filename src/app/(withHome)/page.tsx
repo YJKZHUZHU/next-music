@@ -35,7 +35,7 @@ export default function Home() {
       cursor.current = res.data.cursor
       if (res.data.hasMore && cursor.current) {
         totalData.current = [...totalData.current, ...res.data.blocks]
-        // 继续请求，知道数据全部请求完成
+        // 继续请求，直到数据全部请求完成
         getData({ refresh: false, cursor: cursor.current })
         return
       }

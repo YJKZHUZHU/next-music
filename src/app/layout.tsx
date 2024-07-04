@@ -4,8 +4,7 @@ import "@/app/global.scss"
 import dynamic from "next/dynamic"
 import Providers from "@/components/ProgressBarProvider"
 import Head from "next/head"
-import { Analytics } from '@vercel/analytics/react';
-
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -23,10 +22,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-
-  setTimeout(() => {
-    console.log("rest", '执行')
-  }, 2000)
   dynamic(() => import("amfe-flexible"), {
     ssr: false,
   })
@@ -39,7 +34,10 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"></meta>
       </Head>
       <body className={inter.className}>
-        <Providers>{children}<Analytics /></Providers>
+        <Providers>
+          {children}
+          <Analytics />
+        </Providers>
       </body>
     </html>
   )

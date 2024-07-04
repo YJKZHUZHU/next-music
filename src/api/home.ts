@@ -1,5 +1,5 @@
 import { IBannerInfo, ICreatives, IRecommendedPlay, MlogDetail } from "@/store/homePage"
-import { IResp, service,cacheService } from "./index"
+import { IResp, service, cacheService } from "./index"
 
 enum EnumFeatch {
   banner = "/banner",
@@ -82,35 +82,6 @@ interface ISongsResp {
 }
 export const songs = (data: ISongsParams) => {
   return service.post<ISongsParams, IResp<ISongsResp>>(EnumFeatch.songs, data)
-}
-
-interface ICreator {
-  accountStatus: number
-  authStatus: number
-  authority: number
-  avatarImgId: number
-  avatarImgIdStr: string
-  avatarUrl: string
-  backgroundImgId: number
-  backgroundImgIdStr: string
-  backgroundUrl: string
-  birthday: number
-  city: number
-  defaultAvatar: false
-  description: string
-  detailDescription: string
-  djStatus: number
-  expertTags: null
-  followed: false
-  gender: number
-  mutual: false
-  nickname: string
-  province: number
-  remarkName: null | string
-  signature: string
-  userId: number
-  userType: number
-  vipType: number
 }
 
 interface Creator {

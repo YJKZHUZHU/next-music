@@ -13,7 +13,7 @@ interface Props {
 const skeletonArr = [[...new Array(3).keys()], [...new Array(3).keys()]]
 
 interface IResources {
-  resourceId: string,
+  resourceId: string
   imageUrl: string
   title: string
   titleType: string
@@ -23,58 +23,54 @@ interface IResources {
 }
 
 interface IDataItem {
-  key: number,
+  key: number
   resources: IResources[]
 }
-
-
 
 const SimilarityRecommended: FC<Props> = (props) => {
   const { onRefresh } = props
   const loading = useSimilarityRecommendedLoading()
   const { list, title, button } = useSimilarityRecommended()
 
-
   const data: IDataItem[] = useMemo(() => {
     if (list.length === 0) {
       return skeletonArr.map((item, index) => {
         return {
           key: index,
-          resources: item.map(d => {
+          resources: item.map((d) => {
             return {
               resourceId: String(d),
               imageUrl: rgbDataURL(235, 235, 235),
-              title: '',
-              titleType: '',
-              subTitle: '',
-              artists: '',
-              showPlayIcon: false
+              title: "",
+              titleType: "",
+              subTitle: "",
+              artists: "",
+              showPlayIcon: false,
             }
-          })
+          }),
         }
       })
     }
     return list.map((item, index) => {
       return {
         key: index,
-        resources: item.resources.map(d => {
+        resources: item.resources.map((d) => {
           return {
             resourceId: d.resourceId,
             imageUrl: d.uiElement?.image?.imageUrl,
             title: d?.uiElement?.mainTitle?.title,
             titleType: d?.uiElement?.subTitle?.titleType,
-            subTitle: d?.uiElement?.subTitle?.titleType === "songRcmdTag"
-              ? d?.uiElement?.subTitle?.title
-              : "SQ",
+            subTitle:
+              d?.uiElement?.subTitle?.titleType === "songRcmdTag"
+                ? d?.uiElement?.subTitle?.title
+                : "SQ",
             artists: d?.resourceExtInfo?.artists?.map((s: any) => s.name),
-            showPlayIcon: !!d.resourceExtInfo?.song?.videoInfo?.video
+            showPlayIcon: !!d.resourceExtInfo?.song?.videoInfo?.video,
           }
-        })
+        }),
       }
     })
   }, [list])
-
-
 
   const renderTop = useCallback(() => {
     if (!title) return <Skeleton width={300} height={18} />
@@ -90,7 +86,6 @@ const SimilarityRecommended: FC<Props> = (props) => {
             alt=""
           />
           <span className="text-[18px] text-[#121212] font-[500] line-clamp-1">{title}</span>
-
         </div>
         <div className="flex-1 ml-8">
           <div className="flex items-center gap-2 bg-[#E6E8EC] rounded-[24px] px-12 py-2 w-[max-content] ">
@@ -104,9 +99,7 @@ const SimilarityRecommended: FC<Props> = (props) => {
 
   return (
     <>
-      <div className="flex  items-center  px-[24px]">
-        {renderTop()}
-      </div>
+      <div className="flex  items-center  px-[24px]">{renderTop()}</div>
 
       <div className="scrollbar-hide overflow-x-scroll  px-[24px]">
         <div className="flex gap-8   flex-nowrap">
@@ -120,25 +113,22 @@ const SimilarityRecommended: FC<Props> = (props) => {
                         <NextImage src={d?.imageUrl} alt="" className="rounded-[8px]" />
                       </div>
 
-
                       <div className="flex-1 flex flex-col gap-4 mr-8">
-                        {
-                          d?.title ? (<span className="line-clamp-1 font-[600] text-[#343648]">
-                            {d?.title}
-                          </span>) : <Skeleton height={16} />
-                        }
-                        {
-                          d?.subTitle ? <div className="flex items-center gap-2">
+                        {d?.title ? (
+                          <span className="line-clamp-1 font-[600] text-[#343648]">{d?.title}</span>
+                        ) : (
+                          <Skeleton height={16} />
+                        )}
+                        {d?.subTitle ? (
+                          <div className="flex items-center gap-2">
                             <span className=" text-10 bg-[#F2E4E9] text-[#D92D42] rounded-[6px] px-4">
                               {d?.subTitle}
-
                             </span>
-                            <span className=" line-clamp-1 text-12">
-                              {d?.artists}
-                            </span>
-                          </div> : <Skeleton height={16} width="80%" />
-                        }
-
+                            <span className=" line-clamp-1 text-12">{d?.artists}</span>
+                          </div>
+                        ) : (
+                          <Skeleton height={16} width="80%" />
+                        )}
                       </div>
                       {d?.showPlayIcon && (
                         <Image

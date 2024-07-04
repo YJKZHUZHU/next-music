@@ -32,3 +32,7 @@
 
 ## 模糊效果
 1. https://github.com/lishaobos/magic-img/blob/main/src/magic.ts
+
+## 视频播放
+1. https://github.com/muxinc/next-video
+2. https://next-video-demo.vercel.app/player-only

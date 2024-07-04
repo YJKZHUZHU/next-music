@@ -1,6 +1,5 @@
 const path = require("path")
 
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   sassOptions: {
@@ -12,10 +11,15 @@ const nextConfig = {
     // domains: ["p1.music.126.net", "p5.music.126.net", "p6.music.126.net"],
     // loader:'cloudinary',
 
-    remotePatterns: [{
-      // protocol: 'http',
-      hostname: '**.music.126.net',
-    }],
+    remotePatterns: [
+      {
+        // protocol: 'http',
+        hostname: "**.music.126.net",
+      },
+      {
+        hostname: "**.vodkgeyttp8.vod.126.net",
+      },
+    ],
   },
   env: {
     V_CONSOLE: process.env.V_CONSOLE,
@@ -24,7 +28,7 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
+        source: "/api/:path*",
         destination: "https://api.douya-music.top/:path*",
       },
     ]

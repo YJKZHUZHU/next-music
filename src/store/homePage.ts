@@ -376,146 +376,158 @@ export const useTopic = () => {
   }
 }
 
+interface MlogBaseData {
+  id: string // 唯一标识符
+  type: number // 类型
+  originalTitle: string // 原始标题
+  text: string // 文本内容
+  desc?: null // 描述，可能为空
+  interveneText?: null // 干预文本，可能为空
+  pubTime: number // 发布时间，时间戳格式
+  coverUrl: string // 封面图片URL
+  coverDetail: {
+    verticalCoverImage: {
+      width?: null // 垂直封面图片宽度，可能为空
+      height?: null // 垂直封面图片高度，可能为空
+      imageUrl: string // 垂直封面图片URL
+    }
+    horizontalCoverImage: {
+      width?: null // 水平封面图片宽度，可能为空
+      height?: null // 水平封面图片高度，可能为空
+      imageUrl: string // 水平封面图片URL
+    }
+  }
+  coverHeight: number // 封面高度
+  greatCover: boolean // 是否是精选封面
+  coverWidth: number // 封面宽度
+  coverColor: number // 封面颜色
+  coverPicKey: string // 封面图片的key
+  coverDynamicUrl?: null // 动态封面URL，可能为空
+  audio?: null // 音频信息，可能为空
+  threadId: string // 线程ID
+  duration: number // 时长，毫秒为单位
+  video: {
+    videoKey: string // 视频key
+    duration: number // 视频时长，毫秒为单位
+    coverUrl: string // 视频封面URL
+    frameUrl: string // 视频帧图片URL
+    frameImage: {
+      picKey: string // 视频帧图片的key
+      imageUrl: string // 视频帧图片URL
+      width: number // 视频帧图片宽度
+      height: number // 视频帧图片高度
+    }
+    width: number // 视频宽度
+    height: number // 视频高度
+    urlInfo: {
+      id: string // URL信息ID
+      url?: null // 视频URL，可能为空
+      size: number // 文件大小
+      r?: null // 分辨率，可能为空
+      validityTime: number // 有效期时间，秒为单位
+      resolution?: null // 分辨率，可能为空
+    }
+    urlInfos: Array<{
+      id: string
+      url?: null
+      size: number
+      r?: null
+      validityTime: number
+      resolution: number
+    }>
+    rcmdUrlInfo: {
+      id: string
+      url?: null
+      size: number
+      r?: null
+      validityTime: number
+      resolution?: null
+    }
+    playCount?: null // 播放次数，可能为空
+    coverDetail: {
+      verticalCoverImage: {
+        picKey: string
+        imageUrl: string
+        width?: null
+        height?: null
+      }
+      horizontalCoverImage: {
+        picKey: string
+        imageUrl: string
+        width: number
+        height: number
+      }
+    }
+  }
+  videos?: null // 视频列表，可能为空
+  graphic?: null // 图形信息，可能为空
+}
+
+interface MlogExtVO {
+  likedCount: number // 点赞数
+  commentCount: number // 评论数
+  playCount: number // 播放次数
+  song: {
+    id: number // 歌曲ID
+    name: string // 歌曲名称
+    coverUrl: string // 歌曲封面URL
+    duration: number // 歌曲时长，毫秒为单位
+    artists: Array<{
+      artistId: number // 艺术家ID
+      artistName: string // 艺术家名称
+    }>
+    privilege?: null // 权限信息，可能为空
+    albumName: string // 专辑名称
+    startTime?: null // 开始时间，可能为空
+    endTime?: null // 结束时间，可能为空
+  }
+  algSong?: null // 算法推荐歌曲，可能为空
+  videoStartPlayTime: number // 视频开始播放时间
+  canCollect: boolean // 是否可以收藏
+  collectReason?: null // 收藏原因，可能为空
+  artistName?: null // 艺术家名称，可能为空
+  rcmdInfo?: null // 推荐信息，可能为空
+  strongPushMark?: null // 强推标记，可能为空
+  strongPushIcon?: null // 强推图标，可能为空
+  specialTag?: null // 特殊标签，可能为空
+  channelTag?: null // 频道标签，可能为空
+  artists: Array<{}> // 艺术家列表
+}
+
+interface UserProfile {
+  userId: number // 用户ID
+  nickname: string // 用户昵称
+  avatarUrl: string // 用户头像URL
+  followed: boolean // 是否已关注
+  userType: number // 用户类型
+  isAnchor: boolean // 是否是主播
+  avatarDetail: {
+    userType: number // 用户类型
+    identityLevel: number // 身份等级
+    identityIconUrl: string // 身份图标URL
+  }
+}
+
 export interface MlogDetail {
   id: string
   type: number
   mlogBaseDataType: number
-  position: null
+  position?: null
   resource: {
-    mlogBaseData: {
-      id: string
-      type: number
-      originalTitle: string
-      text: string
-      desc: string
-      interveneText: string
-      pubTime: number
-      coverUrl: string
-      coverDetail: {
-        verticalCoverImage: {
-          width: null
-          height: null
-          imageUrl: null
-        }
-        horizontalCoverImage: {
-          width: null
-          height: null
-          imageUrl: null
-        }
-      }
-      coverHeight: number
-      greatCover: boolean
-      coverWidth: number
-      coverColor: number
-      coverPicKey: string
-      coverDynamicUrl: null
-      audio: null
-      threadId: string
-      duration: number
-      video: {
-        videoKey: string
-        duration: number
-        coverUrl: string
-        frameUrl: string
-        frameImage: {
-          picKey: string
-          imageUrl: string
-          width: number
-          height: number
-        }
-        width: number
-        height: number
-        urlInfo: {
-          id: string
-          url: null
-          size: number
-          r: number
-          validityTime: number
-          resolution: null
-        }
-        urlInfos: [
-          {
-            id: string
-            url: null
-            size: number
-            r: number
-            validityTime: number
-            resolution: number
-          }
-        ]
-        rcmdUrlInfo: {
-          id: string
-          url: null
-          size: number
-          r: number
-          validityTime: number
-          resolution: null
-        }
-        playCount: null
-        coverDetail: {
-          verticalCoverImage: null
-          horizontalCoverImage: null
-        }
-      }
-      videos: null
-      graphic: null
-    }
-    mlogExtVO: {
-      likedCount: number
-      commentCount: number
-      playCount: number
-      song: {
-        id: number
-        name: string
-        coverUrl: string
-        duration: number
-        artists: [
-          {
-            artistId: number
-            artistName: string
-          }
-        ]
-        privilege: null
-        albumName: string
-        startTime: null
-        endTime: null
-      }
-      algSong: null
-      videoStartPlayTime: number
-      canCollect: boolean
-      collectReason: null
-      artistName: null
-      rcmdInfo: null
-      strongPushMark: null
-      strongPushIcon: null
-      specialTag: string
-      channelTag: null
-      artists: []
-    }
-    userProfile: {
-      userId: number
-      nickname: string
-      avatarUrl: string
-      followed: boolean
-      userType: number
-      isAnchor: boolean
-      avatarDetail: {
-        userType: null
-        identityLevel: null
-        identityIconUrl: null
-      }
-    }
-    relatedPubUsers: null
+    mlogBaseData: MlogBaseData
+    mlogExtVO: MlogExtVO
+    userProfile: UserProfile
+    relatedPubUsers?: null
     status: number
     source: number
     shareUrl: string
-    mlogPlaylists: null
+    mlogPlaylists?: null
   }
   alg: string
   logInfo: string
-  reason: string
+  reason?: null
   matchField: number
-  matchFieldContent: null
+  matchFieldContent?: null
   sameCity: boolean
 }
 

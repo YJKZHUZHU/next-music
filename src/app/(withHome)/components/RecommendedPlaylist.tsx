@@ -7,51 +7,42 @@ import { useRecommendedPlay } from "@/store/homePage"
 import { Triangle, NextImage } from "@/components"
 import { rgbDataURL } from "@/utils/rgbDataURL"
 
-
 const skeletonArr = [...new Array(6).keys()]
 
 interface IResources {
-  imageUrl: string,
-  playCount?: number,
-  resourceId?: string,
+  imageUrl: string
+  playCount?: number
+  resourceId?: string
   title: string
 }
 interface IDataItem {
-  creativeType: string,
-  creativeId: string,
+  creativeType: string
+  creativeId: string
   imageUrl: string
   playCount?: number
-  title?: string,
+  title?: string
   resources: IResources[]
-  loop: boolean,
+  loop: boolean
   autoplay: boolean
 }
-
-
 
 function RecommendedPlaylist() {
   const [currentIndex, setCurrentIndex] = useState<Record<string, number>>({})
 
   const { title, list } = useRecommendedPlay()
 
-
   const swiperItems = (resources: IResources[], imageUrl: string) => {
     return resources.map((item) => (
       <Swiper.Item key={item.resourceId} className=" relative !h-[140px]">
-        <NextImage
-          className="rounded-[16px]"
-          src={item.imageUrl || imageUrl}
-          alt=""
-        />
-        {
-          item?.playCount && <div className="absolute right-[8px] top-[4px] flex items-center gap-[4px]">
+        <NextImage className="rounded-[16px]" src={item.imageUrl || imageUrl} alt="" />
+        {item?.playCount && (
+          <div className="absolute right-[8px] top-[4px] flex items-center gap-[4px]">
             <Triangle />
             <span className="text-[#ffffff] text-[12px] font-[600]">
               {tranNumber(item?.playCount)}
             </span>
           </div>
-        }
-
+        )}
       </Swiper.Item>
     ))
   }
@@ -59,20 +50,27 @@ function RecommendedPlaylist() {
   const data: IDataItem[] = useMemo(() => {
     setCurrentIndex({})
     if (list.length === 0) {
-      return skeletonArr.map(d => {
+      return skeletonArr.map((d) => {
         return {
           creativeType: String(d),
           creativeId: String(d),
           imageUrl: rgbDataURL(235, 235, 235),
           playCount: undefined,
-          title: '',
-          resources: [{ imageUrl: rgbDataURL(235, 235, 235), playCount: undefined, resourceId: String(d), title: '' }],
+          title: "",
+          resources: [
+            {
+              imageUrl: rgbDataURL(235, 235, 235),
+              playCount: undefined,
+              resourceId: String(d),
+              title: "",
+            },
+          ],
           loop: false,
-          autoplay: false
+          autoplay: false,
         }
       })
     }
-    return list.map(d => {
+    return list.map((d) => {
       // setCurrentIndex({ ...currentIndex, [d.creativeId]: 0 })
       return {
         creativeType: d.creativeType,
@@ -81,20 +79,21 @@ function RecommendedPlaylist() {
         playCount: d.resources[0]?.resourceExtInfo?.playCount,
         title: d.uiElement.mainTitle.title,
         resources: d.resources.map((item, index) => {
-          console.log('item---', item)
-          return { imageUrl: item.uiElement.image.imageUrl, playCount: item.resourceExtInfo?.playCount, resourceId: item.resourceId, title: item?.uiElement?.mainTitle?.title }
+          console.log("item---", item)
+          return {
+            imageUrl: item.uiElement.image.imageUrl,
+            playCount: item.resourceExtInfo?.playCount,
+            resourceId: item.resourceId,
+            title: item?.uiElement?.mainTitle?.title,
+          }
         }),
         loop: d.resources.length > 1,
-        autoplay: d.resources.length > 1
+        autoplay: d.resources.length > 1,
       }
     })
-
   }, [JSON.stringify(list)])
 
-
-
   const renderTitle = (source: IResources[], id: string) => {
-
     if (Object.keys(currentIndex).length === 0) {
       setCurrentIndex({ [id!]: 0 })
     }
@@ -103,7 +102,6 @@ function RecommendedPlaylist() {
 
     return source[current]?.title
   }
-
 
   return (
     <>
@@ -121,23 +119,26 @@ function RecommendedPlaylist() {
                   loop={item.loop}
                   autoplay={item.autoplay}
                   indicator={false}
-                  onIndexChange={(current) => setCurrentIndex({ ...currentIndex, [item.creativeId]: current })}
+                  onIndexChange={(current) =>
+                    setCurrentIndex({ ...currentIndex, [item.creativeId]: current })
+                  }
                   direction="vertical"
                   className="!rounded-[16px] !h-[140px]">
                   {swiperItems(item.resources, item.imageUrl)}
                 </Swiper>
-                {
-                  item.title ? <div className="mt-[8px] text-[14px] leading-[18px] text-[#121212] line-clamp-2 animate-out fade-in">
+                {item.title ? (
+                  <div className="mt-[8px] text-[14px] leading-[18px] text-[#121212] line-clamp-2 animate-out fade-in">
                     {item.loop ? renderTitle(item.resources, item.creativeId) : item.title}
-                  </div> : <>
+                  </div>
+                ) : (
+                  <>
                     <Skeleton height={16} />
                     <Skeleton height={16} width="70%" />
                   </>
-                }
+                )}
               </div>
             )
           })}
-
         </div>
       </div>
     </>
