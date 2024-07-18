@@ -11,8 +11,12 @@ import {
   SimilarityRecommended,
   Topic,
   MusicVideo,
-  RadarPlaylist
+  RadarPlaylist,
+  Album,
+  OfficialPlaylist,
+  HotPodcast
 } from "./components"
+import style from './index.module.scss'
 
 export default function Home() {
   const [setPageList, setLoading, updatePageList, setBlockCodeLoading] = useHomePageStore(
@@ -85,28 +89,43 @@ export default function Home() {
         <Top />
 
         <div className="px-[16px]">
-          <HomeBanner />
+          <HomeBanner className={style.banner} />
         </div>
         <div className="px-[16px]">
           <Resources />
         </div>
 
+        {/* 推荐歌单 */}
         <div className=" flex flex-col gap-[16px]">
           <RecommendedPlaylist />
         </div>
-
+        {/* 猜你喜欢 */}
         <div className="flex flex-col gap-[16px]">
           <SimilarityRecommended
             onRefresh={() => getOneData(true, EnumBlockCode.HOMEPAGE_BLOCK_STYLE_RCMD)}
           />
         </div>
+        {/* 热门话题 */}
         <div className="flex flex-col gap-[16px]">
           <Topic />
         </div>
         {/* 雷达歌单 */}
-        {/* <div className="flex flex-col gap-[16px]">
+        <div className="flex flex-col gap-[16px]">
           <RadarPlaylist />
-        </div> */}
+        </div>
+        {/* 新歌新碟 */}
+        <div className="flex flex-col gap-[16px]">
+          <Album />
+        </div>
+        {/* 场景歌单 */}
+        <div className="flex flex-col gap-[16px]">
+          <OfficialPlaylist />
+        </div>
+        {/* 热门播客 */}
+        <div className="flex flex-col gap-[16px]">
+          <HotPodcast />
+        </div>
+        {/* 精选音乐视频 */}
         <div className="flex flex-col gap-[16px]">
           <MusicVideo onRefresh={() => getOneData(true, EnumBlockCode.HOMEPAGE_MUSIC_MLOG)} />
         </div>

@@ -39,7 +39,7 @@ const HomeBanner: FC<Props> = (props) => {
   }, [bannerList])
 
   return (
-    <Swiper className={className} loop autoplay={false}>
+    <Swiper indicatorProps={{ color: 'white' }} className={className} loop autoplay={false}>
       {items}
     </Swiper>
   )

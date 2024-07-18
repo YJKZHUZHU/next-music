@@ -1,14 +1,12 @@
 import React, { FC, useCallback, useMemo } from "react"
-import { useSimilarityRecommended, useSimilarityRecommendedLoading } from "@/store/homePage"
+import { useNewAlbumNewSong, useSimilarityRecommended, useSimilarityRecommendedLoading, useVoicelistRcmd } from "@/store/homePage"
 import Image from "next/image"
 import { Triangle, NextImage } from "@/components"
 import classNames from "classnames"
 import Skeleton from "react-loading-skeleton"
 import { rgbDataURL } from "@/utils/rgbDataURL"
 
-interface Props {
-  onRefresh: () => void
-}
+
 
 const skeletonArr = [[...new Array(3).keys()], [...new Array(3).keys()]]
 
@@ -27,10 +25,8 @@ interface IDataItem {
   resources: IResources[]
 }
 
-const SimilarityRecommended: FC<Props> = (props) => {
-  const { onRefresh } = props
-  const loading = useSimilarityRecommendedLoading()
-  const { list, title, button } = useSimilarityRecommended()
+const HotPodcast: FC = () => {
+  const { list, title } = useVoicelistRcmd()
 
   const data: IDataItem[] = useMemo(() => {
     if (list.length === 0) {
@@ -60,10 +56,11 @@ const SimilarityRecommended: FC<Props> = (props) => {
             imageUrl: d.uiElement?.image?.imageUrl,
             title: d?.uiElement?.mainTitle?.title,
             titleType: d?.uiElement?.subTitle?.titleType,
-            subTitle:
-              d?.uiElement?.subTitle?.titleType === "songRcmdTag"
-                ? d?.uiElement?.subTitle?.title
-                : "SQ",
+            subTitle: d?.uiElement?.labelTexts[0],
+            // subTitle:
+            //   d?.uiElement?.subTitle?.titleType === "songRcmdTag"
+            //     ? d?.uiElement?.subTitle?.title
+            //     : "SQ",
             artists: d?.resourceExtInfo?.artists?.map((s: any) => s.name),
             showPlayIcon: !!d.resourceExtInfo?.song?.videoInfo?.video,
           }
@@ -72,34 +69,14 @@ const SimilarityRecommended: FC<Props> = (props) => {
     })
   }, [list])
 
-  const renderTop = useCallback(() => {
-    if (!title) return <Skeleton width={300} height={18} />
-    return (
-      <>
-        <div onClick={onRefresh} className="flex items-center gap-[4px]">
-          <Image
-            priority
-            className={classNames({ ["animate-spin"]: loading })}
-            src="/home/reload.png"
-            width={18}
-            height={18}
-            alt=""
-          />
-          <span className="text-[18px] text-[#121212] font-[500] line-clamp-1">{title}</span>
-        </div>
-        <div className="flex-1 ml-8">
-          <div className="flex items-center gap-2 bg-[#E6E8EC] rounded-[24px] px-12 py-2 w-[max-content] ">
-            <Triangle color="#2E3348" size={5} />
-            <span className="text-[#313849] text-14">{button?.text || "播放"}</span>
-          </div>
-        </div>
-      </>
-    )
-  }, [title, button, loading])
+
 
   return (
     <>
-      <div className="flex  items-center  px-[16px]">{renderTop()}</div>
+      <div className=" flex justify-between items-center gap-[12px] px-[16px]">
+        <span className=" text-[18px] text-[#121212]  font-[500]">{title}</span>
+        <span className=" text-[14px] text-[#FB233B] leading-[20px]">查看全部</span>
+      </div>
 
       <div className="scrollbar-hide overflow-x-scroll  px-[16px]">
         <div className="flex gap-8   flex-nowrap">
@@ -121,9 +98,11 @@ const SimilarityRecommended: FC<Props> = (props) => {
                         )}
                         {d?.subTitle ? (
                           <div className="flex items-center gap-2">
-                            <span className=" text-10 bg-[#EED4D6] text-[#E13736] opacity-[0.8] rounded-[6px] px-4">
-                              {d?.subTitle}
-                            </span>
+                            {
+                              d?.subTitle && <span className=" text-10 bg-[#EED4D6] text-[#E13736] opacity-[0.8] rounded-[6px] px-4">
+                                {d?.subTitle}
+                              </span>
+                            }
                             <span className=" line-clamp-1 text-12">{d?.artists}</span>
                           </div>
                         ) : (
@@ -151,4 +130,4 @@ const SimilarityRecommended: FC<Props> = (props) => {
   )
 }
 
-export default SimilarityRecommended
+export default HotPodcast

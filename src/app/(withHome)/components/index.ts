@@ -14,4 +14,10 @@ export { default as Topic } from "./Topic"
 
 export { default as MusicVideo } from "./MusicVideo"
 
-export {default as RadarPlaylist} from './RadarPlaylist'
+export { default as RadarPlaylist } from "./RadarPlaylist"
+
+export { default as Album } from "./Album"
+
+export { default as OfficialPlaylist } from "./OfficialPlaylist"
+
+export { default as HotPodcast } from "./HotPodcast"

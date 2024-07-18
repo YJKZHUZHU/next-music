@@ -1,7 +1,7 @@
 "use client"
 import React, { FC, useCallback, useEffect, useRef } from "react"
 import Skeleton from "react-loading-skeleton"
-import { useMisicVideo, useMisicVideoLoading } from "@/store/homePage"
+import { useMusicVideo, useMusicVideoLoading } from "@/store/homePage"
 import Image from "next/image"
 import BackgroundVideo from "next-video/background-video"
 import classNames from "classnames"
@@ -16,8 +16,8 @@ interface Props {
 
 const MusicVideo: FC<Props> = (props) => {
   const { onRefresh } = props
-  const { list, title } = useMisicVideo()
-  const loading = useMisicVideoLoading()
+  const { list, title } = useMusicVideo()
+  const loading = useMusicVideoLoading()
   const [isVisible, ref] = useElementVisible()
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const renderTop = useCallback(() => {
@@ -51,15 +51,17 @@ const MusicVideo: FC<Props> = (props) => {
     })
   }, [])
 
+  if (list.length === 0 && !loading) return null
+
   return (
     <>
-      <div className="flex  items-center  px-[24px]">
-        {list.length === 0 ? <Skeleton width={300} height={18} /> : renderTop()}
+      <div className="flex  items-center  px-[16px]">
+        {list.length === 0 && loading ? <Skeleton width={300} height={18} /> : renderTop()}
       </div>
 
       <div
         ref={scrollRef}
-        className="scrollbar-hide overflow-x-scroll  px-[24px] flex gap-8  flex-nowrap">
+        className="scrollbar-hide overflow-x-scroll  px-[16px] flex gap-8  flex-nowrap">
         {list?.map((item) => {
           return <VideoCard item={item} key={item.id} />
         })}

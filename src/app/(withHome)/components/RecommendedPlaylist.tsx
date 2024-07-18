@@ -105,11 +105,11 @@ function RecommendedPlaylist() {
 
   return (
     <>
-      <div className=" flex justify-between items-center gap-[12px] px-[24px]">
+      <div className=" flex justify-between items-center gap-[12px] px-[16px]">
         <span className=" text-[18px] text-[#121212]  font-[500]">{title}</span>
         <span className=" text-[14px] text-[#FB233B] leading-[20px]">查看全部</span>
       </div>
-      <div className="scrollbar-hide overflow-x-scroll  px-[24px] ">
+      <div className="scrollbar-hide overflow-x-scroll  px-[16px] ">
         <div className="flex gap-[16px] w-[920px]">
           {data.map((item) => {
             return (

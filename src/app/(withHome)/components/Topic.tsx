@@ -60,9 +60,9 @@ function Topic() {
 
   return (
     <>
-      <div className="flex  items-center  px-[24px]">{renderTop()}</div>
+      <div className="flex  items-center  px-[16px]">{renderTop()}</div>
 
-      <div className="scrollbar-hide overflow-x-scroll  px-[24px]">
+      <div className="scrollbar-hide overflow-x-scroll  px-[16px]">
         <div className="flex gap-8  flex-nowrap w-[fit-content]">
           {wrapList.map((item, index) => {
             return (

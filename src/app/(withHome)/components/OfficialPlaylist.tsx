@@ -2,7 +2,7 @@
 import { useMemo } from "react"
 import Skeleton from "react-loading-skeleton"
 import { tranNumber } from "@/utils/tranNumber"
-import { useMgcPlaylist } from "@/store/homePage"
+import { useMgcPlaylist, useOfficialPlaylist } from "@/store/homePage"
 import { Triangle, NextImage } from "@/components"
 import { rgbDataURL } from "@/utils/rgbDataURL"
 
@@ -25,9 +25,9 @@ interface IDataItem {
   autoplay: boolean
 }
 
-function RadarPlaylist() {
+function OfficialPlaylist() {
 
-  const { title, list } = useMgcPlaylist()
+  const { title, list } = useOfficialPlaylist()
 
 
   const data: IDataItem[] = useMemo(() => {
@@ -108,4 +108,4 @@ function RadarPlaylist() {
   )
 }
 
-export default RadarPlaylist
+export default OfficialPlaylist

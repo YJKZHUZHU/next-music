@@ -4,22 +4,37 @@ import { persist, createJSONStorage, devtools } from "zustand/middleware"
 import { ProfileData } from "./user"
 
 export enum EnumBlockCode {
+  /** 首页轮播 */
   "HOMEPAGE_BANNER" = "HOMEPAGE_BANNER",
+  /** 跳转模块 */
   "HOMEPAGE_BLOCK_OLD_DRAGON_BALL" = "HOMEPAGE_BLOCK_OLD_DRAGON_BALL",
+  /** 推荐歌单 */
   "HOMEPAGE_BLOCK_PLAYLIST_RCMD" = "HOMEPAGE_BLOCK_PLAYLIST_RCMD",
+  /** 猜你喜欢 */
   "HOMEPAGE_BLOCK_STYLE_RCMD" = "HOMEPAGE_BLOCK_STYLE_RCMD",
+  /** 热门话题 */
   "HOMEPAGE_BLOCK_HOT_TOPIC" = "HOMEPAGE_BLOCK_HOT_TOPIC",
+
   "HOMEPAGE_MUSIC_MLOG" = "HOMEPAGE_MUSIC_MLOG",
+  /** ${name}的雷达歌单 */
   "HOMEPAGE_BLOCK_MGC_PLAYLIST" = "HOMEPAGE_BLOCK_MGC_PLAYLIST",
+  /** 热门播客 */
   "HOMEPAGE_VOICELIST_RCMD" = "HOMEPAGE_VOICELIST_RCMD",
   "HOMEPAGE_MUSIC_PODCAST_RCMD_BLOCK" = "HOMEPAGE_MUSIC_PODCAST_RCMD_BLOCK",
+  /** 专属场景歌单 */
   "HOMEPAGE_BLOCK_OFFICIAL_PLAYLIST" = "HOMEPAGE_BLOCK_OFFICIAL_PLAYLIST",
+  /** 云村出品 */
   "HOMEPAGE_BLOCK_YUNCUN_PRODUCED" = "HOMEPAGE_BLOCK_YUNCUN_PRODUCED",
+  /** 新歌新碟 */
   "HOMEPAGE_BLOCK_NEW_ALBUM_NEW_SONG" = "HOMEPAGE_BLOCK_NEW_ALBUM_NEW_SONG",
   "HOMEPAGE_BLOCK_TOPLIST" = "HOMEPAGE_BLOCK_TOPLIST",
+  /** 热评歌曲 */
   "HOMEPAGE_BLOCK_NEW_HOT_COMMENT" = "HOMEPAGE_BLOCK_NEW_HOT_COMMENT",
+  /** 音乐日历 */
   "HOMEPAGE_MUSIC_CALENDAR" = "HOMEPAGE_MUSIC_CALENDAR",
+  /** 广播 */
   "HOMEPAGE_PODCAST24" = "HOMEPAGE_PODCAST24",
+  /** 视频合集 */
   "HOMEPAGE_BLOCK_VIDEO_PLAYLIST" = "HOMEPAGE_BLOCK_VIDEO_PLAYLIST",
   "HOMEPAGE_WHOLENET_HOT_PODCAST" = "HOMEPAGE_WHOLENET_HOT_PODCAST",
   "HOMEPAGE_VOICEBOOK_RCMD" = "HOMEPAGE_VOICEBOOK_RCMD",
@@ -228,6 +243,12 @@ export interface ICreatives {
   creativeType: CreativeType // 创意类型
   resources: Resource[] // 资源数组
   position: number // 位置
+  action: string
+  actionType: string
+  alg: string
+  creativeId: string
+  logInfo: string
+  uiElement: UiElement // UI 元素
 }
 interface ResourceExtInfo {
   playCount: number // 播放次数
@@ -531,18 +552,78 @@ export interface MlogDetail {
   sameCity: boolean
 }
 
-export const useMisicVideoLoading = () =>
+export const useMusicVideoLoading = () =>
   useHomePageStore((state) => state.blockCodeLoading[EnumBlockCode.HOMEPAGE_MUSIC_MLOG] || false)
 
-export const useMisicVideo = () => {
+export const useMusicVideo = () => {
   const target = useHomePageStore((state) =>
     state.pageList.find((item) => item.blockCode === EnumBlockCode.HOMEPAGE_MUSIC_MLOG)
   )
 
-  const list = (target?.extInfo || []) as MlogDetail[]
+  const list = (target?.extInfo! || []) as MlogDetail[]
   const title = target?.uiElement?.subTitle.title
   return {
     list,
     title: title || "精选音乐视频",
+  }
+}
+
+/** 雷达歌单 */
+
+export const useMgcPlaylist = () => {
+  const target = useHomePageStore((state) =>
+    state.pageList.find((item) => item.blockCode === EnumBlockCode.HOMEPAGE_BLOCK_MGC_PLAYLIST)
+  )
+
+  const list = target?.creatives! || []
+  const title = target?.uiElement?.subTitle.title
+  return {
+    list,
+    title: title || "雷达歌单",
+  }
+}
+
+/** 新歌新碟 */
+export const useNewAlbumNewSong = () => {
+  const target = useHomePageStore((state) =>
+    state.pageList.find(
+      (item) => item.blockCode === EnumBlockCode.HOMEPAGE_BLOCK_NEW_ALBUM_NEW_SONG
+    )
+  )
+
+  const list = target?.creatives! || []
+  // const title = target?.uiElement?.subTitle.title
+  return {
+    list,
+    title: `新歌新碟 \\数字专辑`,
+  }
+}
+
+/** 专属场景歌单 */
+
+export const useOfficialPlaylist = () => {
+  const target = useHomePageStore((state) =>
+    state.pageList.find((item) => item.blockCode === EnumBlockCode.HOMEPAGE_BLOCK_OFFICIAL_PLAYLIST)
+  )
+
+  const list = target?.creatives! || []
+  const title = target?.uiElement?.subTitle.title
+  return {
+    list,
+    title: title || "场景歌单",
+  }
+}
+
+/** 热门播客 */
+export const useVoicelistRcmd = () => {
+  const target = useHomePageStore((state) =>
+    state.pageList.find((item) => item.blockCode === EnumBlockCode.HOMEPAGE_VOICELIST_RCMD)
+  )
+
+  const list = target?.creatives! || []
+  const title = target?.uiElement?.subTitle.title
+  return {
+    list,
+    title: title || "热门播客",
   }
 }

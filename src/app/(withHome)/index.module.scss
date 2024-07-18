@@ -1,0 +1,19 @@
+.banner {
+  border-radius: 10px;
+  :global(.adm-page-indicator) {
+    --active-dot-border-radius: 50% !important;
+    --active-dot-color: #ffffff;
+    --dot-border-radius: 50% !important;
+    --active-dot-size: 3px !important;
+  }
+  :global(.adm-swiper-indicator) {
+    left: 10% !important;
+  }
+
+  :global(.adm-swiper-track) {
+    border-radius: 10px;
+  }
+  :global(.adm-swiper-track-inner) {
+    border-radius: 10px;
+  }
+}
