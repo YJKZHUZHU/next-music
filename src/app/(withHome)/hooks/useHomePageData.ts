@@ -93,7 +93,7 @@ export const useHomePageData = () => {
     })
   }, [])
 
-  console.log("排行榜", pageList.get(EnumBlockCode.HOMEPAGE_BLOCK_TOPLIST))
+  console.log("推荐歌单", pageList.get(EnumBlockCode.HOMEPAGE_BLOCK_PLAYLIST_RCMD))
 
   const similarityRecommendedLoading = useSimilarityRecommendedLoading()
 
@@ -126,8 +126,15 @@ export const useHomePageData = () => {
       title,
       list: list.map((d) => {
         return {
-          showSwiper: false,
-          resources: [],
+          showSwiper: d?.creativeType === "scroll_playlist",
+          resources: d?.resources?.map((item) => {
+            return {
+              imageUrl: item?.uiElement.image.imageUrl,
+              playCount: item?.resourceExtInfo?.playCount,
+              resourceId: item?.resourceId,
+              title: item?.uiElement.mainTitle.title,
+            }
+          }),
           id: d.creativeId,
           imageUrl: d.uiElement.image.imageUrl,
           playCount: d.resources[0]?.resourceExtInfo?.playCount,
