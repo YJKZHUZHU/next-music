@@ -1,10 +1,11 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "@/app/global.scss"
 import dynamic from "next/dynamic"
 import Providers from "@/components/ProgressBarProvider"
 import Head from "next/head"
 import { Analytics } from "@vercel/analytics/react"
+import classNames from "classnames"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -17,6 +18,14 @@ export const metadata: Metadata = {
   description: "豆芽音乐",
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  minimumScale: 1,
+  userScalable: false,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,13 +36,8 @@ export default function RootLayout({
   })
 
   return (
-    <html lang="zh-CN" style={{ fontSize: "37.5px" }}>
-      <Head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"></meta>
-      </Head>
-      <body className={inter.className}>
+    <html lang="zh-CN" style={{ fontSize: "37.5px" }} className="scrollbar-hide h-full overflow-hidden">
+      <body className={classNames('scrollbar-hide h-full', inter.className)}>
         <Providers>
           {children}
           <Analytics />

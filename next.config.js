@@ -13,12 +13,15 @@ const nextConfig = {
 
     remotePatterns: [
       {
-        // protocol: 'http',
-        hostname: "**.music.126.net",
+        hostname: "**",
       },
-      {
-        hostname: "**.vodkgeyttp8.vod.126.net",
-      },
+      // {
+      //   // protocol: 'http',
+      //   hostname: "**.music.126.net",
+      // },
+      // {
+      //   hostname: "**.vodkgeyttp8.vod.126.net",
+      // },
     ],
   },
   env: {

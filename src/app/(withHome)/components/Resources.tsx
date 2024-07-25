@@ -1,34 +1,17 @@
-import { useResources } from "@/store/homePage"
-import React, { useMemo } from "react"
+import React, { memo, useMemo } from "react"
 import dayjs from "dayjs"
 import Skeleton from "react-loading-skeleton"
-import { rgbDataURL } from "@/utils/rgbDataURL"
 import { NextImage } from "@/components"
+import { ISourceItem } from "../hooks/useHomePageData"
 
-const skeletonArr = [...new Array(10).keys()]
 
-function Resources() {
-  const resources = useResources()
-  const list = useMemo(() => {
-    if (resources.length === 0) {
-      return skeletonArr.map((d) => {
-        return {
-          image: rgbDataURL(235, 235, 235),
-          showtoday: false,
-          title: "",
-          resourceId: d,
-        }
-      })
-    }
-    return resources.map((item) => {
-      return {
-        image: item?.uiElement.image?.imageUrl2 || "/",
-        title: item?.uiElement?.mainTitle?.title,
-        showtoday: item?.action === "orpheus://songrcmd",
-        resourceId: item?.resourceId,
-      }
-    })
-  }, [resources])
+interface Props {
+  list: ISourceItem[]
+}
+
+function Resources(props: Props) {
+  const { list = [] } = props
+  console.log('入口')
   return (
     <div className="flex gap-8 scrollbar-hide overflow-x-scroll">
       {list?.map((item) => {
@@ -58,4 +41,4 @@ function Resources() {
   )
 }
 
-export default Resources
+export default memo(Resources)

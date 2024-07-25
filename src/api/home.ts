@@ -1,4 +1,4 @@
-import { IBannerInfo, ICreatives, IRecommendedPlay, MlogDetail } from "@/store/homePage"
+import { EnumBlockCode, IBannerInfo, ICreatives, IRecommendedPlay, MlogDetail } from "@/store/homePage"
 import { IResp, service, cacheService } from "./index"
 
 enum EnumFeatch {
@@ -302,7 +302,7 @@ interface IHomePageData {
  * 数据块对象
  */
 export interface Block {
-  blockCode: string // 数据块编码
+  blockCode: EnumBlockCode // 数据块编码
   showType: string // 展示类型
   dislikeShowType: number // 不喜欢的展示类型
   extInfo:

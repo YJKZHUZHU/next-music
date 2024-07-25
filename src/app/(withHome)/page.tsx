@@ -1,136 +1,97 @@
 "use client"
 import { Block, homepage } from "@/api/home"
-import { PullToRefresh } from "antd-mobile"
+import { Divider, PullToRefresh } from "antd-mobile"
 import { EnumBlockCode, useHomePageStore } from "@/store/homePage"
 import { useEffect, useRef } from "react"
 import {
   HomeBanner,
-  RecommendedPlaylist,
   Top,
   Resources,
-  SimilarityRecommended,
-  Topic,
   MusicVideo,
-  RadarPlaylist,
-  Album,
-  OfficialPlaylist,
-  HotPodcast
+  Card,
+  Skeleton
 } from "./components"
+import { useHomePageData } from './hooks/useHomePageData'
 import style from './index.module.scss'
+import classNames from "classnames"
+
+
+// 轮播，入口，推荐歌单，猜你喜欢，热门话题，雷达歌单，热门播客，专属场景歌单，云村出品，新歌新碟，排行榜，云村星评馆，音乐日历，广播
 
 export default function Home() {
-  const [setPageList, setLoading, updatePageList, setBlockCodeLoading] = useHomePageStore(
-    (state) => [
-      state.setPageList,
-      state.setLoading,
-      state.updatePageList,
-      state.setBlockCodeLoading,
-    ]
-  )
-  const cursor = useRef("")
 
-  const totalData = useRef<Block[]>([])
 
-  const getData = async (data: { refresh: boolean; cursor?: string }) => {
-    try {
-      setLoading(true)
-      const res = await homepage(data)
-      console.log("==app首页数据==", res)
-      cursor.current = res.data.cursor
-      if (res.data.hasMore && cursor.current) {
-        totalData.current = [...totalData.current, ...res.data.blocks]
-        // 继续请求，直到数据全部请求完成
-        getData({ refresh: false, cursor: cursor.current })
-        return
-      }
-      totalData.current = [...totalData.current, ...res.data.blocks]
+  const { bannerList, resources, recommendedPlayList, radarPlayList, scenePlayList, topicList, similarityRecommended, newAlbumNewSong, voicelistRcmd, showSkeleton, yuncunList, rankingList, getOneData, getData } = useHomePageData()
 
-      setPageList(totalData.current)
 
-      setLoading(false)
-    } catch (error) {
-      setLoading(false)
-      console.log("error", error)
-    }
-  }
 
-  const getOneData = async (refresh: boolean, blockCode: EnumBlockCode) => {
-    try {
-      setBlockCodeLoading(blockCode, true)
-
-      const res = await homepage({
-        refresh,
-        cursor: JSON.stringify({
-          offset: 0,
-          blockCodeOrderList: [blockCode],
-        }),
-      })
-      console.log(`==${blockCode}==数据`, res.data.blocks)
-
-      const target = res.data.blocks.find((item) => item.blockCode === blockCode)
-      target && updatePageList(target)
-
-      setBlockCodeLoading(blockCode, false)
-    } catch (error) {
-      setBlockCodeLoading(blockCode, false)
-      console.log("error", error)
-    }
-  }
-
-  useEffect(() => {
-    getData({
-      refresh: false,
-      // cursor: ''
-    })
-  }, [])
   return (
-    <PullToRefresh headHeight={50} onRefresh={() => getData({ refresh: true })}>
-      <div className="flex flex-col  py-16 gap-24">
-        <Top />
+    <div className={classNames('flex flex-col  py-16 gap-24', style.pageHome)}>
+      <Top />
+      {
+        showSkeleton ? <Skeleton /> : <PullToRefresh headHeight={50} onRefresh={() => getData({ refresh: true })}>
+          <div className="flex flex-col gap-[24px]">
+            <div className="px-[16px]">
+              <HomeBanner list={bannerList} className={style.banner} />
+            </div>
+            <div className="px-[16px]">
+              <Resources list={resources} />
+            </div>
+            {/* 推荐歌单 */}
+            <div className=" flex flex-col gap-[16px]">
+              <Card title={recommendedPlayList?.title!} list={recommendedPlayList?.list} />
+            </div>
+            <Divider className="!m-0" />
+            {/* 猜你喜欢 */}
+            <div className="flex flex-col gap-[16px]">
+              <Card.List {...similarityRecommended} onRefresh={() => getOneData(true, EnumBlockCode.HOMEPAGE_BLOCK_STYLE_RCMD)} />
+            </div>
+            <Divider className="!m-0" />
+            {/* 热门话题 */}
+            <div className="flex flex-col gap-[16px]">
+              <Card.Topic title={topicList?.title!} list={topicList?.list} />
+            </div>
+            <Divider className="!m-0" />
+            {/* 雷达歌单 */}
+            <div className="flex flex-col gap-[16px]">
+              <Card title={radarPlayList?.title!} list={radarPlayList?.list} />
+            </div>
+            <Divider className="!m-0" />
+            {/* 热门播客 */}
+            <div className="flex flex-col gap-[16px]">
+              <Card.List {...voicelistRcmd} />
+              {/* <HotPodcast /> */}
+            </div>
+            <Divider className="!m-0" />
+            {/* 场景歌单 */}
+            <div className="flex flex-col gap-[16px]">
+              <Card title={scenePlayList?.title!} list={scenePlayList.list} />
+            </div>
+            <Divider className="!m-0" />
+            {/* 云村出品 */}
+            <div className="flex flex-col gap-[16px]">
+              <Card.YunCun {...yuncunList} />
+            </div>
+            <Divider className="!m-0" />
+            {/* 新歌新碟 */}
+            <div className="flex flex-col gap-[16px]">
+              <Card.List {...newAlbumNewSong} />
+            </div>
+            <Divider className="!m-0" />
+            {/* 排行榜 */}
+            <div className="flex flex-col gap-[16px]">
+              <Card.RankingList {...rankingList} />
+            </div>
 
-        <div className="px-[16px]">
-          <HomeBanner className={style.banner} />
-        </div>
-        <div className="px-[16px]">
-          <Resources />
-        </div>
+            {/* 精选音乐视频 */}
+            <div className="flex flex-col gap-[16px]">
+              <MusicVideo onRefresh={() => getOneData(true, EnumBlockCode.HOMEPAGE_MUSIC_MLOG)} />
+            </div>
+          </div>
+        </PullToRefresh>
+      }
 
-        {/* 推荐歌单 */}
-        <div className=" flex flex-col gap-[16px]">
-          <RecommendedPlaylist />
-        </div>
-        {/* 猜你喜欢 */}
-        <div className="flex flex-col gap-[16px]">
-          <SimilarityRecommended
-            onRefresh={() => getOneData(true, EnumBlockCode.HOMEPAGE_BLOCK_STYLE_RCMD)}
-          />
-        </div>
-        {/* 热门话题 */}
-        <div className="flex flex-col gap-[16px]">
-          <Topic />
-        </div>
-        {/* 雷达歌单 */}
-        <div className="flex flex-col gap-[16px]">
-          <RadarPlaylist />
-        </div>
-        {/* 新歌新碟 */}
-        <div className="flex flex-col gap-[16px]">
-          <Album />
-        </div>
-        {/* 场景歌单 */}
-        <div className="flex flex-col gap-[16px]">
-          <OfficialPlaylist />
-        </div>
-        {/* 热门播客 */}
-        <div className="flex flex-col gap-[16px]">
-          <HotPodcast />
-        </div>
-        {/* 精选音乐视频 */}
-        <div className="flex flex-col gap-[16px]">
-          <MusicVideo onRefresh={() => getOneData(true, EnumBlockCode.HOMEPAGE_MUSIC_MLOG)} />
-        </div>
 
-      </div>
-    </PullToRefresh>
+    </div>
   )
 }

@@ -17,3 +17,34 @@
     border-radius: 10px;
   }
 }
+
+.pageHome {
+  background: linear-gradient(to bottom, #dfddfb 40%, #f7eaf5 80%, #f3f5fb 90%, #f3f6f9 100%);
+  background-size: 100% 200px;
+  background-repeat: no-repeat;
+}
+
+.top {
+  :global(.adm-search-bar .adm-search-bar-input-box) {
+    position: relative;
+    background: linear-gradient(to right, #c8c9f5 30%, #dfc6eb 90%, #e5c8e7 100%);
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 18px; /* 确保渐变边框有圆角 */
+      background: linear-gradient(to right, #b2b5f6, #e5bde5);
+      z-index: -1;
+      margin: -2px; /* 根据内边距调整 */
+    }
+  }
+  :global(.adm-input-element) {
+    // caret-color: #ffffff;
+    &::placeholder {
+      color: #71708c; /* 例如，文本输入框的占位符颜色设置为红色 */
+    }
+  }
+}

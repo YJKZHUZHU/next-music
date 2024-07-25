@@ -11,6 +11,8 @@
 1. [https://rp.mockplus.cn/editor/hza0i1-c-/X1DUYjHpQx](https://rp.mockplus.cn/editor/hza0i1-c-/X1DUYjHpQx)
 2. [https://mastergo.com/file/120884059883760?fileOpenFrom=drafts&page_id=%3A6911&layer_id=0%3A19759](https://mastergo.com/file/120884059883760?fileOpenFrom=drafts&page_id=%3A6911&layer_id=0%3A19759)
 3. [网易云app截图](https://uinotes.com/app/143766329233515990)
+4. [慕客](https://app.mockplus.cn/app/n_fpcrPkG/develop/6QVdZeeYm/B_MOCUhOMq)
+5. [慕客](https://www.mockplus.cn/example/rp/100072)
 
 ### 预览地址
 

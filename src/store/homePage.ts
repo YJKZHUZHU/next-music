@@ -1,5 +1,6 @@
 import { Block } from "@/api/home"
 import { create } from "zustand"
+import isEqual from "lodash/isEqual"
 import { persist, createJSONStorage, devtools } from "zustand/middleware"
 import { ProfileData } from "./user"
 
@@ -14,7 +15,6 @@ export enum EnumBlockCode {
   "HOMEPAGE_BLOCK_STYLE_RCMD" = "HOMEPAGE_BLOCK_STYLE_RCMD",
   /** 热门话题 */
   "HOMEPAGE_BLOCK_HOT_TOPIC" = "HOMEPAGE_BLOCK_HOT_TOPIC",
-
   "HOMEPAGE_MUSIC_MLOG" = "HOMEPAGE_MUSIC_MLOG",
   /** ${name}的雷达歌单 */
   "HOMEPAGE_BLOCK_MGC_PLAYLIST" = "HOMEPAGE_BLOCK_MGC_PLAYLIST",
@@ -27,6 +27,7 @@ export enum EnumBlockCode {
   "HOMEPAGE_BLOCK_YUNCUN_PRODUCED" = "HOMEPAGE_BLOCK_YUNCUN_PRODUCED",
   /** 新歌新碟 */
   "HOMEPAGE_BLOCK_NEW_ALBUM_NEW_SONG" = "HOMEPAGE_BLOCK_NEW_ALBUM_NEW_SONG",
+  /** 排行榜 */
   "HOMEPAGE_BLOCK_TOPLIST" = "HOMEPAGE_BLOCK_TOPLIST",
   /** 热评歌曲 */
   "HOMEPAGE_BLOCK_NEW_HOT_COMMENT" = "HOMEPAGE_BLOCK_NEW_HOT_COMMENT",
@@ -38,19 +39,6 @@ export enum EnumBlockCode {
   "HOMEPAGE_BLOCK_VIDEO_PLAYLIST" = "HOMEPAGE_BLOCK_VIDEO_PLAYLIST",
   "HOMEPAGE_WHOLENET_HOT_PODCAST" = "HOMEPAGE_WHOLENET_HOT_PODCAST",
   "HOMEPAGE_VOICEBOOK_RCMD" = "HOMEPAGE_VOICEBOOK_RCMD",
-}
-
-interface Props {
-  pageList: Block[]
-  loading: boolean
-  blockCodeLoading: Record<string, boolean>
-}
-
-interface Actions {
-  setBlockCodeLoading: (code: string, loading: boolean) => void
-  setPageList: (pageList: Block[]) => void
-  setLoading: (loading: boolean) => void
-  updatePageList: (pageList: Block) => void
 }
 
 /**
@@ -205,7 +193,14 @@ interface UiElement {
     purePicture: boolean // 是否纯图片
   }
   rcmdShowType: string // 推荐展示类型
-  labelTexts: string[] // 标签文本数组
+  labelText: {
+    labelUrl: string
+    newLabelUrl?: string
+    newTextColor?: string
+    text: string
+    textColor: string
+  }
+  labelTexts: string[]
 }
 
 /**
@@ -240,7 +235,7 @@ type CreativeType = "DRAGON_BALL"
  * 推荐对象
  */
 export interface ICreatives {
-  creativeType: CreativeType // 创意类型
+  creativeType: CreativeType | string // 创意类型
   resources: Resource[] // 资源数组
   position: number // 位置
   action: string
@@ -287,114 +282,6 @@ export interface IRecommendedPlay {
   alg: string // 算法
   logInfo: string // 日志信息
   position: number // 位置
-}
-
-const initialState: Props = {
-  pageList: [],
-  loading: false,
-  blockCodeLoading: {},
-}
-
-export const useHomePageStore = create<Props & Actions>()(
-  devtools(
-    persist(
-      (set, get) => ({
-        ...initialState,
-        setPageList: (pageList) => set({ pageList }, false, "更新首页信息"),
-        setLoading: (loading) => set({ loading }, false, "更新loading状态"),
-        setBlockCodeLoading: (blockCode, loading) => {
-          const target = get().blockCodeLoading
-
-          set(
-            { blockCodeLoading: { ...target, [blockCode]: loading } },
-            false,
-            `更新${blockCode}loading状态`
-          )
-        },
-        updatePageList: (pageInfo) => {
-          const source = get().pageList
-          const target = source.map((item) => {
-            if (item.blockCode === pageInfo.blockCode) {
-              return pageInfo
-            }
-            return item
-          })
-          set({ pageList: target }, false, `更新${pageInfo.blockCode}数据`)
-        },
-      }),
-      {
-        name: "homePageStore",
-        storage: createJSONStorage(() => localStorage), // (optional) by default, 'localStorage' is used
-      }
-    ),
-    {
-      name: "homePageStore",
-    }
-  )
-)
-
-export const useLoading = () => useHomePageStore((state) => state.loading)
-
-// 首页轮播位
-export const useBanner = () => {
-  const target = useHomePageStore((state) =>
-    state.pageList?.find((d) => d.blockCode === EnumBlockCode.HOMEPAGE_BANNER)
-  )
-  const result = target?.extInfo as { banners?: IBannerInfo[] }
-
-  return result?.banners || []
-}
-
-// 首页导航位
-export const useResources = () =>
-  useHomePageStore(
-    (state) =>
-      state.pageList
-        ?.find((d) => d.blockCode === EnumBlockCode.HOMEPAGE_BLOCK_OLD_DRAGON_BALL)
-        ?.creatives?.find((d) => d.creativeType === "DRAGON_BALL")?.resources || []
-  )
-
-export const useRecommendedPlay = () => {
-  const target = useHomePageStore((state) =>
-    state.pageList?.find((d) => d.blockCode === EnumBlockCode.HOMEPAGE_BLOCK_PLAYLIST_RCMD)
-  )
-  const list = target?.creatives || []
-  const title = target?.uiElement?.subTitle.title
-  return {
-    list: list as unknown as IRecommendedPlay[],
-    title: title || "推荐歌单",
-  }
-}
-
-// 相似推荐
-export const useSimilarityRecommended = () => {
-  const target = useHomePageStore((state) =>
-    state.pageList.find((item) => item.blockCode === EnumBlockCode.HOMEPAGE_BLOCK_STYLE_RCMD)
-  )
-  return {
-    list: target?.creatives || [],
-    resourceIdList: target?.resourceIdList || [],
-    title: target?.uiElement?.subTitle?.title,
-    button: target?.uiElement?.button,
-  }
-}
-
-export const useSimilarityRecommendedLoading = () =>
-  useHomePageStore(
-    (state) => state.blockCodeLoading[EnumBlockCode.HOMEPAGE_BLOCK_STYLE_RCMD] || false
-  )
-
-// 热门话题
-export const useTopic = () => {
-  const target = useHomePageStore((state) =>
-    state.pageList.find((item) => item.blockCode === EnumBlockCode.HOMEPAGE_BLOCK_HOT_TOPIC)
-  )
-  const list = target?.creatives || []
-  const title = target?.uiElement?.subTitle.title
-  return {
-    list: list as unknown as IRecommendedPlay[],
-    title: title || "热门话题",
-  }
 }
 
 interface MlogBaseData {
@@ -552,78 +439,125 @@ export interface MlogDetail {
   sameCity: boolean
 }
 
+interface Props {
+  pageList: Map<EnumBlockCode, Block>
+  loading: boolean
+  blockCodeLoading: Record<string, boolean>
+}
+
+interface Actions {
+  setBlockCodeLoading: (code: string, loading: boolean) => void
+  setPageList: (pageList: Block[]) => void
+  setLoading: (loading: boolean) => void
+  updatePageList: (pageList: Block) => void
+}
+
+const initialState: Props = {
+  pageList: new Map(),
+  loading: false,
+  blockCodeLoading: {},
+}
+
+export const useHomePageStore = create<Props & Actions>()(
+  devtools(
+    persist(
+      (set, get) => ({
+        ...initialState,
+        setPageList: (pageList) => {
+          const source = get().pageList
+          console.log("更新首页数据")
+          pageList.forEach((item) => {
+            if (!isEqual(item, source.get(item.blockCode))) {
+              console.log("不相等吗", item)
+              set({ pageList: source.set(item.blockCode, item) }, false, "更新首页信息")
+            }
+            // source.set(item.blockCode, item)
+          })
+          // set({ pageList: source }, false, "更新首页信息")
+        },
+        setLoading: (loading) => set({ loading }, false, "更新loading状态"),
+        setBlockCodeLoading: (blockCode, loading) => {
+          const target = get().blockCodeLoading
+
+          set(
+            { blockCodeLoading: { ...target, [blockCode]: loading } },
+            false,
+            `更新${blockCode}loading状态`
+          )
+        },
+        updatePageList: (pageInfo) => {
+          console.log("pageInfo", pageInfo)
+          const source = get().pageList
+          // const result = source.get(pageInfo.blockCode)
+          set(
+            { pageList: source.set(pageInfo.blockCode, pageInfo) },
+            false,
+            `更新${pageInfo.blockCode}数据`
+          )
+        },
+      }),
+      {
+        name: "homePageStore",
+        storage: createJSONStorage(() => localStorage, {
+          reviver: (key, value: any) => {
+            if (key === "pageList") {
+              const storedMapArray = JSON.parse(value)
+              // 将数组转换为 Map 对象
+              const restoredMap = new Map(storedMapArray)
+              return restoredMap
+            }
+
+            return value
+          },
+          replacer: (key, value: any) => {
+            if (key === "pageList") {
+              const mapArray = Array.from(value)
+
+              // 将数组转换为 JSON 字符串
+              const mapString = JSON.stringify(mapArray)
+
+              // 将字符串存储到 localStorage
+              return mapString
+            }
+
+            return value
+          },
+        }),
+      }
+    ),
+    {
+      name: "homePageStore",
+    }
+  )
+)
+
+export const usePageList = () => useHomePageStore((state) => state.pageList)
+
+export const useLoading = () => useHomePageStore((state) => state.loading)
+
+export const useSetBlockCodeLoading = () => useHomePageStore((state) => state.setBlockCodeLoading)
+
+export const useSetPageList = () => useHomePageStore((state) => state.setPageList)
+
+export const useSetLoading = () => useHomePageStore((state) => state.setLoading)
+
+export const useUpdatePageList = () => useHomePageStore((state) => state.updatePageList)
+
+export const useSimilarityRecommendedLoading = () =>
+  useHomePageStore(
+    (state) => state.blockCodeLoading[EnumBlockCode.HOMEPAGE_BLOCK_STYLE_RCMD] || false
+  )
+
 export const useMusicVideoLoading = () =>
   useHomePageStore((state) => state.blockCodeLoading[EnumBlockCode.HOMEPAGE_MUSIC_MLOG] || false)
 
 export const useMusicVideo = () => {
-  const target = useHomePageStore((state) =>
-    state.pageList.find((item) => item.blockCode === EnumBlockCode.HOMEPAGE_MUSIC_MLOG)
-  )
+  const target = useHomePageStore((state) => state.pageList.get(EnumBlockCode.HOMEPAGE_MUSIC_MLOG))
 
   const list = (target?.extInfo! || []) as MlogDetail[]
   const title = target?.uiElement?.subTitle.title
   return {
     list,
     title: title || "精选音乐视频",
-  }
-}
-
-/** 雷达歌单 */
-
-export const useMgcPlaylist = () => {
-  const target = useHomePageStore((state) =>
-    state.pageList.find((item) => item.blockCode === EnumBlockCode.HOMEPAGE_BLOCK_MGC_PLAYLIST)
-  )
-
-  const list = target?.creatives! || []
-  const title = target?.uiElement?.subTitle.title
-  return {
-    list,
-    title: title || "雷达歌单",
-  }
-}
-
-/** 新歌新碟 */
-export const useNewAlbumNewSong = () => {
-  const target = useHomePageStore((state) =>
-    state.pageList.find(
-      (item) => item.blockCode === EnumBlockCode.HOMEPAGE_BLOCK_NEW_ALBUM_NEW_SONG
-    )
-  )
-
-  const list = target?.creatives! || []
-  // const title = target?.uiElement?.subTitle.title
-  return {
-    list,
-    title: `新歌新碟 \\数字专辑`,
-  }
-}
-
-/** 专属场景歌单 */
-
-export const useOfficialPlaylist = () => {
-  const target = useHomePageStore((state) =>
-    state.pageList.find((item) => item.blockCode === EnumBlockCode.HOMEPAGE_BLOCK_OFFICIAL_PLAYLIST)
-  )
-
-  const list = target?.creatives! || []
-  const title = target?.uiElement?.subTitle.title
-  return {
-    list,
-    title: title || "场景歌单",
-  }
-}
-
-/** 热门播客 */
-export const useVoicelistRcmd = () => {
-  const target = useHomePageStore((state) =>
-    state.pageList.find((item) => item.blockCode === EnumBlockCode.HOMEPAGE_VOICELIST_RCMD)
-  )
-
-  const list = target?.creatives! || []
-  const title = target?.uiElement?.subTitle.title
-  return {
-    list,
-    title: title || "热门播客",
   }
 }
